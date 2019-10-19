@@ -3,7 +3,7 @@
 
 
 Feauters
-  -Phone and Tablet Reviews
+  -Phone and Tablet Reviews\n
   -Tech-related articles 
   -Email newsletter subscription 
   -Q&A section 
