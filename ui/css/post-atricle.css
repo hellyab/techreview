@@ -1,0 +1,28 @@
+#input-type-button-group{
+    visibility: hidden;
+}
+
+#show-toggler{
+    visibility: visible;
+}
+.dynamic-input:focus{
+    outline: none;
+}
+
+.row{
+    padding-top: 50px;
+
+}
+
+.content{
+    width: 100%;
+}
+
+.yt-vid{
+    position:absolute;
+    padding-top: calc(591.44 / 1127.34 * 100%);
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
