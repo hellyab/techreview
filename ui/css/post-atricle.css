@@ -1,12 +1,28 @@
-#input-type-button-group{
+/* #input-type-button-group{
     visibility: hidden;
+} */
+
+/* #show-toggler{
+    visibility: visible;
+} */
+
+.btn:active, .btn:focus {
+    outline: none!important;
+    box-shadow: none;
+    
 }
 
-#show-toggler{
-    visibility: visible;
-}
 .dynamic-input:focus{
     outline: none;
+}
+
+.btn-sm-toggle{
+    padding-top: 1%;
+    /* text-align: center; */
+    /* line-height: 50%; */
+}
+.btn-sm-in-group{
+    padding-top: 5%!important;
 }
 
 .row{

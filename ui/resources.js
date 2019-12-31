@@ -12,3 +12,11 @@
 
 // video link for embedding youtube vids TESTING
 //https://www.youtube.com/embed/3AKPaq0IaDk?list=PLOHoVaTp8R7f9GV4HW3joHrz4Oq16QBph
+
+//link for the google material icons stylesheet. You will need this to include icons in the page.
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+
+//link for the icons list in the material icons set
+//https://material.io/resources/icons/?icon=add&style=outline
+//NOTE We are using outlined icons
+   
