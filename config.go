@@ -10,3 +10,4 @@ var DBConnfigurations = config{
 	DatabaseName: "postgres",
 	ConnString:   "postgres://postgres:Binaman1!@localhost/testdb?sslmode=disable",
 }
+				

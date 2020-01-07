@@ -46,3 +46,28 @@ func (ah *ArticleHandler) GetArticles(w http.ResponseWriter,
 
 	return
 }
+
+func (ah *ArticleHandler) GetArticle(w http.ResponseWriter,
+	r *http.Request, _ httprouter.Params) {
+
+	article, errs := ah.articleService.GetArticle(1) // added sample data to fetch by id
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(article, "", "\t")
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+
+	return
+}

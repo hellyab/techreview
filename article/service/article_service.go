@@ -23,3 +23,12 @@ func (as *ArticleService) Articles() ([]entity.Article, []error) {
 
 	return articles, nil
 }
+
+func (as *ArticleService) GetArticle(id uint) (*entity.Article, []error) {
+	article, errs := as.articleRepo.GetArticle(id) // here article is pointer btw, it is accesing from the one we did in the repository layer
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return article, nil
+}

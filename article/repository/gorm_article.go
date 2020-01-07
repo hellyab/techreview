@@ -17,6 +17,7 @@ func NewArticleGormRepo(db *gorm.DB) article.ArticleRepository {
 
 }
 
+// gets all articles
 func (aRepo *ArticleGormRepo) Articles() ([]entity.Article, []error) {
 	articles := []entity.Article{}                 //intilize an array of Article entities, so it will be used as a model for GROM
 	errs := aRepo.conn.Find(&articles).GetErrors() // growm implementation of finiding array of articles
@@ -25,4 +26,15 @@ func (aRepo *ArticleGormRepo) Articles() ([]entity.Article, []error) {
 		return nil, errs
 	}
 	return articles, errs
+}
+
+// gets article by id
+func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
+	article := entity.Article{}
+	errs := aRepo.conn.First(&article, id).GetErrors()
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return &article, errs
 }
