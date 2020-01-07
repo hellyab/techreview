@@ -6,14 +6,14 @@ import (
 )
 
 type ArticleService struct {
+	// AricleService struct has access to AricleRepository Interface, so as to access repository methods.
 	articleRepo article.ArticleRepository
 }
 
+// AtricleService implements article.service interface
 func NewArticleService(ArtRepo article.ArticleRepository) article.ArticleService {
 	return &ArticleService{articleRepo: ArtRepo}
 }
-
-// AtricleService implements article.service interface
 
 func (as *ArticleService) Articles() ([]entity.Article, []error) {
 	articles, errs := as.articleRepo.Articles()

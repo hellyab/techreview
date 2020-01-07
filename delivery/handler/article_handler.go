@@ -12,10 +12,12 @@ import (
 
 // handles aricle related http requests
 type ArticleHandler struct {
+	// ArticleHandler struct has access to ArticleServcie Interface, so as to access repository methods.
 	articleService article.ArticleService
 	tmpl           *template.Template
 }
 
+// Creating an instance of article handler n ArticleHandler implements ArticleService
 func NewArticleHandler(t *template.Template, artService article.ArticleService) *ArticleHandler {
 	return &ArticleHandler{tmpl: t, articleService: artService}
 }
@@ -23,7 +25,7 @@ func NewArticleHandler(t *template.Template, artService article.ArticleService) 
 func (ah *ArticleHandler) GetArticles(w http.ResponseWriter,
 	r *http.Request, _ httprouter.Params) {
 
-	articles, errs := ah.articleService.Articles()
+	articles, errs := ah.articleService.Articles() // get the response (form "repo" -> "service" -> "handler" )
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -31,7 +33,7 @@ func (ah *ArticleHandler) GetArticles(w http.ResponseWriter,
 		return
 	}
 
-	output, err := json.MarshalIndent(articles, "", "\t\t")
+	output, err := json.MarshalIndent(articles, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -42,6 +44,5 @@ func (ah *ArticleHandler) GetArticles(w http.ResponseWriter,
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 
-	// ah.tmpl.ExecuteTemplate(w, "index.html", articles)
 	return
 }

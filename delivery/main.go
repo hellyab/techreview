@@ -36,7 +36,7 @@ func main() {
 
 	router := httprouter.New()
 
-	router.GET("/v1/articles", articleHandler.GetArticles)
+	router.GET("/tech/articles", articleHandler.GetArticles)
 
 	http.ListenAndServe("localhost:8181", router)
 }
