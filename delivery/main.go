@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/hellyab/techreview"
 	"github.com/hellyab/techreview/article/repository"
 	"github.com/hellyab/techreview/article/service"
 	"github.com/hellyab/techreview/delivery/handler"
@@ -15,16 +16,19 @@ import (
 )
 
 func main() {
+	// connect to db
+	dbconn, err := gorm.Open(techreview.DBConnfigurations.DatabaseName,
+		techreview.DBConnfigurations.ConnString)
 
-	dbconn, err := gorm.Open("postgres",
-		"postgres://postgres:Binaman1!@localhost/testdb?sslmode=disable")
-
+	// check for db err
 	if err != nil {
 		panic(err)
 	}
 	defer dbconn.Close()
 
+	// initilize the ORM
 	articleRepo := repository.NewArticleGormRepo(dbconn)
+
 	articleSrv := service.NewArticleService(articleRepo)
 	tmpl := template.Must(template.ParseGlob("../ui/templates/*"))
 
@@ -34,5 +38,5 @@ func main() {
 
 	router.GET("/v1/articles", articleHandler.GetArticles)
 
-	http.ListenAndServe(":8181", router)
+	http.ListenAndServe("localhost:8181", router)
 }
