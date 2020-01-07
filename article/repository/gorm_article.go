@@ -38,3 +38,13 @@ func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
 	}
 	return &article, errs
 }
+
+func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
+	art := article
+	errs := aRepo.conn.Save(art).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return art, errs
+
+}

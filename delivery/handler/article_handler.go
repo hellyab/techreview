@@ -71,3 +71,9 @@ func (ah *ArticleHandler) GetArticle(w http.ResponseWriter,
 
 	return
 }
+
+func (ah *ArticleHandler) UpdateArticle(w http.ResponseWriter,
+	r *http.Request, _ httprouter.Params) {
+
+	// todo
+}

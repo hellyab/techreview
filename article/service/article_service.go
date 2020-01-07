@@ -32,3 +32,15 @@ func (as *ArticleService) GetArticle(id uint) (*entity.Article, []error) {
 	}
 	return article, nil
 }
+
+func (as *ArticleService) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
+
+	updatedArticle, errs := as.articleRepo.UpdateArticle(article)
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+
+	return updatedArticle, nil
+
+}
