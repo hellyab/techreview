@@ -1,54 +1,32 @@
 //logs all values from inputs with name dynamic-input to the consol
 //this can be used to send the values to the api after some modification
 document.addEventListener("DOMContentLoaded", event => {
-  console.log("loaded");
+  // console.log("loaded");
   $("#input-type-button-group").toggle();
-  document.onclick = function() {
-    var inputGroup = `<div id="input-type">
-      <button id="show-toggler" class="btn btn-sm-toggle btn-sm bg-white rounded-circle border-dark"
-          onclick="toggleButtonGroup(event)">
-          <i class="material-icons">
-              add
-          </i>
-      </button>
-
-      <div class="btn-group" id="input-type-button-group">
-          <button onclick="addImageComponent(event,this)"
-              class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark m-1"><i
-                  class="material-icons">
-                  add_a_photo
-              </i></button>
-          <button onclick="addSecondTitleComponent(event, this)"
-              class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark m-1"><i
-                  class="material-icons">
-                  title
-              </i></button>
-          <button onclick="addVideoComponent(event, this)"
-              class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark m-1"><i
-                  class="material-icons">
-                  play_circle_outline
-              </i></button>
-      </div>
-  </div>`;
-    if ($("#input-type")) {
-      $("#input-type").remove();
-    }
-    if (
-      document.activeElement.nodeName == "P" ||
-      document.activeElement.nodeName == "H1" ||
-      document.activeElement.nodeName == "H3"
-    ) {
-      $(inputGroup).insertAfter(document.activeElement);
-    }
-  };
 });
+
+// NOTE Removed the add video component
+// <button onclick="addVideoComponent(event, this)"
+//     class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark m-1"><i
+//         class="material-icons">
+//         play_circle_outline
+//     </i></button>
 
 function logValues() {
   var dynamicElements = document.getElementsByName("dynamic-input");
   var i;
   var atricle = {};
   for (i = 0; i < dynamicElements.length; i++) {
-    atricle[`value${i}`] = dynamicElements[i].textContent;
+    if (dynamicElements[i].nodeName == "IMG") {
+      //TODO we need to upload the file and replace the src path with a new path
+      atricle[`img${i}`] = dynamicElements[i].src;
+    } else if (dynamicElements[i].nodeName == "H1") {
+      atricle[`title${i}`] = dynamicElements[i].textContent;
+    } else if (dynamicElements[i].nodeName == "H3") {
+      atricle[`subtitle${i}`] = dynamicElements[i].textContent;
+    } else if (dynamicElements[i].nodeName == "P") {
+      atricle[`text${i}`] = dynamicElements[i].textContent;
+    }
   }
   console.log(atricle);
 }
@@ -56,38 +34,7 @@ function logValues() {
 //toggles the visibility of the button group based on the current visibility status
 function toggleButtonGroup(e) {
   $("#input-type-button-group").toggle();
-  //   if (
-  //     document.getElementById("input-type-button-group").style.visibility !=
-  //     "hidden"
-  //   ) {
-  //     console.log("showing group condition");
-  //     showGroup(e);
-  //   } else {
-  //     console.log("hiding group condition");
-  //     hideGroup(e);
-  //   }
 }
-
-//changes the visibility of the button group and the button
-function showGroup(e) {
-  console.log("showing group");
-  e.preventDefault();
-  var inputTypeButtonGroup = document.getElementById("input-type-button-group");
-  inputTypeButtonGroup.style.visibility = "visible";
-  var showToggler = document.getElementById("show-toggler");
-  showToggler.style.visibility = "hidden";
-}
-
-//changes the visibility of the button group and the button
-// function hideGroup(e) {
-//   console.log("hiding group");
-
-//   e.preventDefault(e);
-//   var inputTypeButtonGroup = document.getElementById("input-type-button-group");
-//   inputTypeButtonGroup.style.visibility = "hidden";
-//   var showToggler = document.getElementById("show-toggler");
-//   showToggler.style.visibility = "visible";
-// }
 
 //checks if the value of the node right before this node is empty
 function checkPreviousElementValue(src) {
@@ -110,6 +57,15 @@ function checkPreviousElementValue(src) {
   }
 }
 
+function moveInputSelector(e, src) {
+  var pos = $(src).position();
+  // console.log(pos.left, pos.top);
+  document.getElementById("input-type").style.position = "absolute";
+  // document.getElementById("input-type").style.zIndex = 10;
+  document.getElementById("input-type").style.top = pos.top - 5 + "px";
+  document.getElementById("input-type").style.left = -50 + "px";
+}
+
 //removes element right before this element
 function removePreviousElement(src) {
   var container = document.getElementById("element-container");
@@ -118,30 +74,34 @@ function removePreviousElement(src) {
 
 //adds a content editable text component
 function addTextComponent(e, src) {
-  $("#input-type-button-group").hide();
+  // $("#input-type-button-group").hide();
 
   e.preventDefault();
-  toggleButtonGroup(e);
+  // toggleButtonGroup(e);
   var element = document.createElement("p");
   element.setAttribute("class", "dynamic-input");
   element.setAttribute("name", "dynamic-input");
   element.setAttribute("contenteditable", "true");
+  element.setAttribute("onfocus", "moveInputSelector(event, this)");
   element.setAttribute("onkeydown", "conditionalTextBox(event, this)");
 
   var container = document.getElementById("element-container");
   //   src.nextSibling = element;
   $(element).insertAfter(src);
+  // var elementInCharge = document.activeElement;
 
   //   container.appendChild(element);
+
+  // $("#input-type").style.left = pos.left-75
   element.focus();
 }
 
 //adds a file input which will post a preview of the image
 function addImageComponent(e, src) {
-  $("#input-type-button-group").hide();
+  // $("#input-type-button-group").hide();
 
   e.preventDefault(e);
-  toggleButtonGroup(e);
+  // toggleButtonGroup(e);
   var container = document.getElementById("element-container");
 
   container.innerHTML += `<input id='uploadFile' type='file' hidden/>`;
@@ -157,14 +117,21 @@ function addImageComponent(e, src) {
       fileContents = reader.result;
       var image = document.createElement("img");
       image.setAttribute("src", fileContents);
-      image.setAttribute("class", "col-8 offset-2");
-      container.appendChild(image);
+      image.setAttribute("class", "col-8 offset-2 mt-2 mb-2");
+      image.setAttribute("name", "dynamic-input");
+      var imageAnchor = document.createElement("a");
+      imageAnchor.setAttribute("class", "imageAnchor");
+      imageAnchor.setAttribute("href", "#");
+      imageAnchor.appendChild(image);
+      imageAnchor.setAttribute("onfocus", "moveInputSelector(event, this)");
+      container.appendChild(imageAnchor);
       container.removeChild(element);
-      console.log(image)
-      document.activeElement = image;
-      addTextComponent(e, image);
-      console.log(image.nextSibling)
-      $(image).nextSibling.focus();
+      // console.log(image);
+      document.activeElement = imageAnchor;
+      addTextComponent(e, imageAnchor);
+
+      // console.log(imageAnchor.nextSibling);
+      // $(imageAnchor).nextSibling.focus();
     };
 
     reader.readAsDataURL(input.files[0]);
@@ -174,16 +141,16 @@ function addImageComponent(e, src) {
 //adds a contenteditable h3
 //TODO focus issues
 function addSecondTitleComponent(e, src) {
-  $("#input-type-button-group").hide();
+  // $("#input-type-button-group").hide();
 
   e.preventDefault();
-  toggleButtonGroup(e);
+  // toggleButtonGroup(e);
   var element = document.createElement("h3");
   element.setAttribute("class", "dynamic-input");
   element.setAttribute("name", "dynamic-input");
   element.setAttribute("contenteditable", "true");
   element.setAttribute("onkeydown", "conditionalTextBox(event, this)");
-
+  element.setAttribute("onfocus", "moveInputSelector(event, this)");
   var container = document.getElementById("element-container");
   container.appendChild(element);
   if (
@@ -192,40 +159,7 @@ function addSecondTitleComponent(e, src) {
   ) {
     removePreviousElement(element.previousElementSibling);
   }
-}
-
-//adds a textbox which takes url and displays the video in iframe when enter is hit
-//TODO make it accept any video link, not just youtube embed links
-//TODO fix the textbox
-function addVideoComponent(e, src) {
-  e.preventDefault();
-  $("#input-type-button-group").hide();
-  var textBox = document.createElement("input");
-  textBox.setAttribute("type", "url");
-  textBox.setAttribute("class", "form-control dynamic-input");
-  textBox.setAttribute("name", "dynamic-input");
-  textBox.setAttribute("required", "true");
-
-  var container = document.getElementById("element-container");
-  container.appendChild(textBox);
-  if (
-    textBox.previousSibling.nodeName != "#test" &&
-    checkPreviousElementValue(textBox.previousSibling) === true
-  ) {
-    removePreviousElement(textBox.previousElementSibling);
-  }
-  textBox.onkeypress = function(e) {
-    if (e.key == "Enter") {
-      container.removeChild(textBox);
-      container.innerHTML += `<div style="position:relative;padding-top:56.25%;">
-        <iframe src=${textBox.value} 
-        frameborder="0" 
-        allowfullscreen
-        style="position:absolute;top:0;left:0;width:100%;height:100%;">
-        </iframe>
-        </div>`;
-    }
-  };
+  element.focus();
 }
 
 //checks if the pressed key is enter and adds a text component
@@ -233,8 +167,15 @@ function conditionalTextBox(e, src) {
   if (e.key === "Enter") {
     src.textContent += "\xa0";
     addTextComponent(e, src);
-  } else if (e.key == "Backspace" && src.textContent == "") {
-    if (src.previousSibling.nodeName != "h") {
+  } else if (
+    e.key == "Backspace" &&
+    (src.textContent == "" || src.nodeName == "IMG") &&
+    src != src.parentNode.firstElementChild
+  ) {
+    if (
+      src.previousSibling.nodeName != "H1" &&
+      src.previousSibling.nodeName != "A"
+    ) {
       //TODO understand what this code is really doing. It was a mix and match kinda build.
       var range = document.createRange();
       var sel = window.getSelection();
@@ -245,7 +186,15 @@ function conditionalTextBox(e, src) {
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);
+    } else if (src.previousSibling.nodeName == "IMG") {
+      src.previousSibling.focus();
     }
     document.getElementById("element-container").removeChild(src);
+  } else if (e.key == "ArrowUp" && src.nodeName != "H1") {
+    // console.log("up");
+    src.previousSibling.focus();
+  } else if (e.key == "ArrowDown" && src != src.parentNode.lastElementChild) {
+    // console.log("down");
+    src.nextSibling.focus();
   }
 }

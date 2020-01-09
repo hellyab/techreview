@@ -23,14 +23,35 @@
                 <form id="element-container">
                     <h1 contenteditable="true" name="dynamic-input" class="dynamic-input"
                         onkeydown="conditionalTextBox(event, this)"></h1>
-                    <p class="dynamic-input" name="dynamic-input" contenteditable="true"
-                        onkeydown="conditionalTextBox(event, this)"></p>
                 </form>
-                <!-- <button onclick="addTextComponent(event,this)" class="btn bg-white rounded-circle border-dark btn-sm">
-                        Text
-                    </button> -->
+                <div id="input-type">
+                    <button id="show-toggler" class="btn btn-sm-toggle btn-sm bg-white rounded-circle border-dark"
+                        onclick="toggleButtonGroup(event)">
+                        <i class="material-icons">
+                            add
+                        </i>
+                    </button>
 
-                <button onclick="logValues()">Log Values</button>
+                    <div id="input-type-button-group">
+                        <button onclick="addImageComponent(event,this)"
+                            class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark m-1"><i
+                                class="material-icons">
+                                add_a_photo
+                            </i></button>
+                        <button onclick="addSecondTitleComponent(event, this)"
+                            class="btn btn-sm btn-sm-in-group bg-white rounded-circle border-dark"><i
+                                class="material-icons">
+                                title
+                            </i></button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary mt-5 ml-12" onclick="logValues()">Submit</button>
+                <!-- <p class="dynamic-input" name="dynamic-input" contenteditable="true"
+            onkeydown="conditionalTextBox(event, this)"></p> -->
+                <!-- <button onclick="addTextComponent(event,this)" class="btn bg-white rounded-circle border-dark btn-sm">
+            Text
+        </button> -->
             </div>
         </div>
     </div>
