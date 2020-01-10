@@ -29,7 +29,8 @@ func (qstnRepo *QuestionGormRepo) Questions() ([]entities.Question, []error) {
 //Question returns a user question stored in the database which has the given id
 func (qstnRepo *QuestionGormRepo) Question(id string) (*entities.Question, []error) {
 	qstn := entities.Question{}
-	errs := qstnRepo.conn.First(&qstn, id).GetErrors()
+	errs := qstnRepo.conn.Where("id = ?", id).First(&qstn).GetErrors()
+	// errs := qstnRepo.conn.First(&qstn, id).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -49,11 +50,13 @@ func (qstnRepo *QuestionGormRepo) UpdateQuestion(question *entities.Question) (*
 //DeleteQuestion deletes a question with a given id from the database
 func (qstnRepo *QuestionGormRepo) DeleteQuestion(id string) (*entities.Question, []error) {
 	qstn, errs := qstnRepo.Question(id)
-
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	errs = qstnRepo.conn.Delete(qstn, id).GetErrors()
+	// errs := qstnRepo.conn.Where("id = ?", id).First(&qstn).GetErrors()
+	errs = qstnRepo.conn.Delete(qstn).GetErrors()
+
+
 	if len(errs) > 0 {
 		return nil, errs
 	}
