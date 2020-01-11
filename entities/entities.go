@@ -45,9 +45,9 @@ type Comment struct {
 
 //Question represents question asked on the platform. It has its own id and contains the inquirer's id
 type Question struct {
-	ID         string
-	InquirerID string `gorm:"column:inquirer"`
-	Inquiry    string
+	ID         string `json:"ID"`
+	InquirerID string `gorm:"column:inquirer" json:"InquirerID"`
+	Inquiry    string `json:"Inquiry"`
 }
 
 //TableName changes the name of the table for gorm

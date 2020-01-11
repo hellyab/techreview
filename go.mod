@@ -10,6 +10,7 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/spf13/viper v1.6.1 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
