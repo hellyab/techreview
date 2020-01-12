@@ -1,0 +1,146 @@
+[33mcommit 852ff0c549121f9d16539a0c78cab2879c99caf9[m[33m ([m[1;36mHEAD -> [m[1;32mbranch-yabsra[m[33m, [m[1;31morigin/branch-yabsra[m[33m)[m
+Author: hell.yab <yabsra23@gmail.com>
+Date:   Tue Dec 31 01:40:39 2019 +0300
+
+    Built parts of the article writing page. Needs some styling and its outputs need to be formated into an agreed structure.
+
+[33mcommit ef895b390da56b5b085a9611ed2df0aefeda65e1[m
+Author: hell.yab <yabsra23@gmail.com>
+Date:   Mon Dec 30 17:22:41 2019 +0300
+
+    Organized the css and js into folders.
+
+[33mcommit 0cf7c55143429aeaff691d66b4ecc0850e2f97e5[m
+Merge: f4c1d8a 77e3268
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Mon Dec 30 17:07:09 2019 +0300
+
+    Merge pull request #5 from hellyab/master
+    
+    catching up with the master (for the ui)
+
+[33mcommit 77e3268b4cbfe8fc37872ea83e42612ea8dbceee[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: b886656 f4c1d8a
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Mon Dec 30 16:34:31 2019 +0300
+
+    Merge pull request #4 from hellyab/branch-yabsra
+    
+    added article usecases' interfaces
+
+[33mcommit b8866565ff04a942c8d3c9ba231de42b804c8d44[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:41:57 2019 +0300
+
+    Add files via upload
+
+[33mcommit c1fccf83c05f7b0d6060691f3f8937330f5efc21[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:39:52 2019 +0300
+
+    Create .gitkeep
+
+[33mcommit 8c692387d72350538c989852137f00ec89b37676[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:37:16 2019 +0300
+
+    Add files via upload
+
+[33mcommit cbb375a64517beb1a15d60efab2ae70fdf1ef32c[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:34:13 2019 +0300
+
+    .gitkeep
+
+[33mcommit 5313e3c8adfa380ababa95c8d363a79e53221000[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:32:14 2019 +0300
+
+    Add files via upload
+
+[33mcommit c8b2f04c9e0901db1dcfccf1e24b5fee9f4e0029[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:30:51 2019 +0300
+
+    Create .gitkeep
+
+[33mcommit dd48712abf2896ec03a6b69abc99027053c9f847[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:26:03 2019 +0300
+
+    Delete css2.css
+
+[33mcommit 5b8a3c9c438d9b897c58a8e91a3e41352f2760b4[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:15:32 2019 +0300
+
+    Create .gitkeep
+
+[33mcommit 1c0c8dd543e9cbf334f024fba8e13f12e6738d50[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 02:13:21 2019 +0300
+
+    .gitkeep
+
+[33mcommit c8283ebdbf1af32f6b2195afc64fe7677a319801[m
+Author: firi193 <56671623+firi193@users.noreply.github.com>
+Date:   Mon Dec 30 01:58:03 2019 +0300
+
+    Add files via upload
+
+[33mcommit f4c1d8ae92345cb06e028cc160c4c887e880d857[m
+Author: hell.yab <yabsra23@gmail.com>
+Date:   Fri Dec 27 00:57:00 2019 +0300
+
+    added article usecases' interfaces
+
+[33mcommit cf8f3927d70e96d1b1b8aa000507554670518f28[m
+Merge: 42d56c7 c7b16f4
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Wed Dec 25 01:03:06 2019 +0300
+
+    Merge pull request #1 from hellyab/branch-yabsra
+    
+    Merge folder structure to master
+
+[33mcommit c7b16f4e346dc1fa65cafde8858b895ac666c4b6[m
+Author: hell.yab <yabsra23@gmail.com>
+Date:   Wed Dec 25 01:01:14 2019 +0300
+
+    Added placeholder files to map out the folder structure
+
+[33mcommit 4f34cc41a43fb58f42d0468bbc6c862413ea2d62[m
+Author: hell.yab <yabsra23@gmail.com>
+Date:   Wed Dec 25 00:52:52 2019 +0300
+
+    First commit (Entities and folder structure)
+
+[33mcommit 42d56c782d864fcee866f49720a8f8b51eff7070[m[33m ([m[1;32mmaster[m[33m)[m
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Sat Oct 19 15:10:58 2019 +0300
+
+    Update README.md
+
+[33mcommit 1e9d837c60f6fd324c6e33ff9d6818f007abab27[m
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Sat Oct 19 14:46:30 2019 +0300
+
+    Update README.md
+
+[33mcommit 83910aa633a5467be6b71257ae2fa822b34fb815[m
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Sat Oct 19 14:40:30 2019 +0300
+
+    Update README.md
+
+[33mcommit c5b3ff752168afd64f9dd1f3175aa9f6671906b8[m
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Sat Oct 19 14:38:24 2019 +0300
+
+    Update README.md
+
+[33mcommit aa9f69daec7f3acd85bc1c75b4d96cfcf30a1ab1[m
+Author: Yabsra A <39404675+hellyab@users.noreply.github.com>
+Date:   Sat Oct 19 13:13:19 2019 +0300
+
+    Initial commit

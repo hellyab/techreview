@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="assets/css/bootstrap-reboot.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-grid.min.css" rel="stylesheet">
+    
+    <!------ Include the above in your HEAD tag ---------->
+
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script src="js/signup.js"></script>
+    <link href="css/forms.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+    <body>
+        <img src="assets/images/image11.jpg" style="height:150%">
+        <div class="myContainer container">
+            <div class="row">
+                <div class="col-md-5 mx-auto">
+               
+                    <div class="signupform form ">
+                        <div class="logo mb-3">
+                            <div class="col-md-12 text-center">
+                                <h1 >Sign Up Now</h1>
+                            </div>
+                        </div>
+                        <form action="controller/ControllerInterface.go" method="POST" name="registration">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">First Name</label>
+                                <input type="text"  name="firstname" class="form-control" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname">
+                                <small id="one"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Last Name</label>
+                                <input type="text"  name="lastname" class="form-control" id="lastname" aria-describedby="emailHelp" placeholder="Enter Lastname">
+                                <small id="two"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" name="email"  class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                                <small id="three"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Password</label>
+                                <input type="password" name="password" id="password"  class="form-control" aria-describedby="emailHelp" placeholder="Enter Password">
+                                <small id="four"></small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Confirm Password</label>
+                                <input type="password" name="conpassword" id="conpassword"  class="form-control" aria-describedby="emailHelp" placeholder="Re-enter Password">
+                                <small id="five"></small>
+                            </div>
+
+                            <div class="col-md-12 text-center mb-3">
+                                <button type="submit" class="btn btn-block mybtn btn-primary blue-background tx-tfm">Submit</button>
+                            </div>
+                       
+                        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </body>
+</html>
