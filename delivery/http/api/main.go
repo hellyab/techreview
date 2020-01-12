@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -8,13 +9,21 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 
+	"github.com/hellyab/techreview/delivery/http/handler"
 
 	ansRepo "github.com/hellyab/techreview/answer/repository"
 	ansServ "github.com/hellyab/techreview/answer/service"
-	"github.com/hellyab/techreview/delivery/http/handler"
+
 	questRepo "github.com/hellyab/techreview/question/repository"
 	questServ "github.com/hellyab/techreview/question/service"
+
+	commRepo "github.com/hellyab/techreview/comment/repository"
+	commServ "github.com/hellyab/techreview/comment/service"
 )
+
+//roleRepo
+//roleSrv
+//some role handler
 
 func main() {
 	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tech_review_test?sslmode=disable")
@@ -25,10 +34,6 @@ func main() {
 
 	defer dbconn.Close()
 
-	//roleRepo
-	//roleSrv
-	//some role handler
-
 	questionRepo := questRepo.NewQuestionGormRepo(dbconn)
 	questionSrv := questServ.NewQuestionService(questionRepo)
 	questionHandler := handler.NewQuestionHandler(questionSrv)
@@ -36,6 +41,10 @@ func main() {
 	answerRepo := ansRepo.NewAnswerGormRepo(dbconn)
 	answerSrv := ansServ.NewAnswerService(answerRepo)
 	answerHandler := handler.NewAnswerHandler(answerSrv)
+
+	commentRepo := commRepo.NewCommentGormRepo(dbconn)
+	commentSrv := commServ.NewCommentService(commentRepo)
+	commentHandler := handler.NewCommentHandler(commentSrv)
 
 	router := httprouter.New()
 
@@ -51,6 +60,12 @@ func main() {
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
 
+	router.GET("/comments", commentHandler.GetComments)
+	router.GET("/comments/:id", commentHandler.GetComment)
+	router.POST("/comment", commentHandler.UpdateComment)
+	router.DELETE("/comments/:id", commentHandler.DeleteComment)
+	router.PUT("/comments/:id", commentHandler.PutComment)
+
 	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
@@ -59,3 +74,4 @@ func main() {
 	http.ListenAndServe(":8181", apiHandler)
 
 }
+
