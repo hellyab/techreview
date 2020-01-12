@@ -8,9 +8,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 
+
+	ansRepo "github.com/hellyab/techreview/answer/repository"
+	ansServ "github.com/hellyab/techreview/answer/service"
 	"github.com/hellyab/techreview/delivery/http/handler"
-	"github.com/hellyab/techreview/question/repository"
-	"github.com/hellyab/techreview/question/service"
+	questRepo "github.com/hellyab/techreview/question/repository"
+	questServ "github.com/hellyab/techreview/question/service"
 )
 
 func main() {
@@ -26,9 +29,13 @@ func main() {
 	//roleSrv
 	//some role handler
 
-	questionRepo := repository.NewQuestionGormRepo(dbconn)
-	questionSrv := service.NewQuestionService(questionRepo)
+	questionRepo := questRepo.NewQuestionGormRepo(dbconn)
+	questionSrv := questServ.NewQuestionService(questionRepo)
 	questionHandler := handler.NewQuestionHandler(questionSrv)
+
+	answerRepo := ansRepo.NewAnswerGormRepo(dbconn)
+	answerSrv := ansServ.NewAnswerService(answerRepo)
+	answerHandler := handler.NewAnswerHandler(answerSrv)
 
 	router := httprouter.New()
 
@@ -38,10 +45,17 @@ func main() {
 	router.PUT("/questions/:id", questionHandler.PutQuestion)
 	router.DELETE("/questions/:id", questionHandler.DeleteQuestion)
 
-	handler := cors.New(cors.Options{
+	router.GET("/answers", answerHandler.GetAnswers)
+	router.GET("/answers/:id", answerHandler.GetAnswer)
+	router.POST("/answer", answerHandler.PostAnswer)
+	router.PUT("/answers/:id", answerHandler.PutAnswer)
+	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
+
+	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
 	}).Handler(router)
-	http.ListenAndServe(":8181", handler)
+
+	http.ListenAndServe(":8181", apiHandler)
 
 }
