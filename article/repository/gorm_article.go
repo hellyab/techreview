@@ -6,18 +6,19 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+//ArticleGormRepo has acces to gorm
 type ArticleGormRepo struct {
 	conn *gorm.DB
 }
 
-// ArticleGormRepo implements article.ArticleRepository
+//NewArticleGormRepo ArticleGormRepo implements article.ArticleRepository
 func NewArticleGormRepo(db *gorm.DB) article.ArticleRepository {
 	// so, indicating the return type in function, while returing a struct, makes that struct to implement the returned interface
 	return &ArticleGormRepo{conn: db}
 
 }
 
-// gets all articles
+// Articles gets all articles
 func (aRepo *ArticleGormRepo) Articles() ([]entity.Article, []error) {
 	articles := []entity.Article{}                 //intilize an array of Article entities, so it will be used as a model for GROM
 	errs := aRepo.conn.Find(&articles).GetErrors() // growm implementation of finiding array of articles
@@ -28,7 +29,7 @@ func (aRepo *ArticleGormRepo) Articles() ([]entity.Article, []error) {
 	return articles, errs
 }
 
-// gets article by id
+//GetArticle gets article by id
 func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
 	article := entity.Article{}
 	errs := aRepo.conn.First(&article, id).GetErrors()
@@ -39,19 +40,7 @@ func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
 	return &article, errs
 }
 
-// UpdateArticle: updates article
-func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
-	art := article
-	errs := aRepo.conn.Save(art).GetErrors()
-	if len(errs) > 0 {
-		return nil, errs
-	}
-	return art, errs
-
-}
-
-// adds new article to db
-
+//PostArticle adds new article to db
 func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Article, []error) {
 	art := article
 	errs := aRepo.conn.Create(art).GetErrors()
@@ -61,7 +50,7 @@ func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Arti
 	return art, errs
 }
 
-// delete comment from db
+//DeleteArticle deletes article	// get the aricle sturct pointer n assing to art from db
 
 func (aRepo *ArticleGormRepo) DeleteArticle(id uint) (*entity.Article, []error) {
 
@@ -86,4 +75,16 @@ func (aRepo *ArticleGormRepo) DeleteArticle(id uint) (*entity.Article, []error) 
 
 	return art, errs // return the deleted article
 
+}
+
+//UpdateArticle updates article
+
+func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
+
+	art := article                           // get the aricle sturct pointer n assing to art
+	errs := aRepo.conn.Save(art).GetErrors() // do orm method SAVE
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return art, errs
 }

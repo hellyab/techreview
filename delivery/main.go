@@ -41,5 +41,6 @@ func main() {
 	router.GET("/tech/articles/:id", articleHandler.GetArticle)
 	router.POST("/tech/articles", articleHandler.PostArticle)
 	router.DELETE("/tech/articles/:id", articleHandler.DeleteArticle)
+	router.PUT("/tech/articles/update/:id", articleHandler.UpdateArticle)
 	http.ListenAndServe("localhost:8181", router)
 }

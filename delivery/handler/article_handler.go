@@ -150,3 +150,62 @@ func (ah *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request, 
 	w.WriteHeader(http.StatusNoContent)
 	return
 }
+
+// UpdateArticle updates given article
+func (ah *ArticleHandler) UpdateArticle(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+
+	id, err := strconv.Atoi(params.ByName("id")) // get the id form the url prams
+	// check for errs
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	// if the id exists in params
+
+	article, errs := ah.articleService.GetArticle(uint(id)) // find an aricle with that id using previous implemneted method getArticle()
+
+	// check for errs
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if the article exists
+
+	size := r.ContentLength    // get the appropiate length for slice
+	body := make([]byte, size) // create slice of bytes with length
+
+	r.Body.Read(body) // put read body from request  in the body
+
+	json.Unmarshal(body, &article) // unmarshla the body json, n put it to aricle struct
+
+	article, errs = ah.articleService.UpdateArticle(article) // outsource the aricle to be updated
+
+	// check for errs
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if successfululy udpated
+
+	updatedArticle, err := json.MarshalIndent(article, "", "\t") // get the updated comment n parse it json form
+
+	// check if any errs during marshaling
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if no errs
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(updatedArticle) //write the updated article
+	return
+}
