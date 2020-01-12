@@ -7,6 +7,7 @@ import (
 	"github.com/hellyab/techreview"
 	"github.com/hellyab/techreview/article/repository"
 	"github.com/hellyab/techreview/article/service"
+
 	"github.com/hellyab/techreview/delivery/handler"
 
 	"github.com/jinzhu/gorm"
@@ -37,7 +38,7 @@ func main() {
 	router := httprouter.New()
 
 	router.GET("/tech/articles", articleHandler.GetArticles)
-	router.GET("/tech/article", articleHandler.GetArticle)
-
+	router.GET("/tech/articles/:id", articleHandler.GetArticle)
+	router.POST("/tech/articles", articleHandler.PostArticle)
 	http.ListenAndServe("localhost:8181", router)
 }

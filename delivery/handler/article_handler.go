@@ -2,10 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"text/template"
 
 	"github.com/hellyab/techreview/article"
+	"github.com/hellyab/techreview/entity"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -48,9 +51,17 @@ func (ah *ArticleHandler) GetArticles(w http.ResponseWriter,
 }
 
 func (ah *ArticleHandler) GetArticle(w http.ResponseWriter,
-	r *http.Request, _ httprouter.Params) {
+	r *http.Request, params httprouter.Params) {
 
-	article, errs := ah.articleService.GetArticle(1) // added sample data to fetch by id
+	id, err := strconv.Atoi(params.ByName("id"))
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	article, errs := ah.articleService.GetArticle(uint(id)) // added sample data to fetch by id
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -72,8 +83,38 @@ func (ah *ArticleHandler) GetArticle(w http.ResponseWriter,
 	return
 }
 
-func (ah *ArticleHandler) UpdateArticle(w http.ResponseWriter,
-	r *http.Request, _ httprouter.Params) {
+func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	size := r.ContentLength    // set up length accordingly
+	body := make([]byte, size) // slice of bytes,
+	r.Body.Read(body)          // read request in form of bytes
 
-	// todo
+	article := &entity.Article{} // inti Article struct to put unmarshaled data
+
+	err := json.Unmarshal(body, article) // put the unmarled data of body to aricle struct
+
+	if err != nil {
+		// check if error happens , then return status not found 404
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if not err
+
+	article, errs := ah.articleService.PostArticle(article) // pass the unmashaled strucl to service and return the article / errs
+
+	// check of errs
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if not errs
+
+	p := fmt.Sprintf("/tech/articles/%d", article.ID) // set up url
+	w.Header().Set("Location", p)                     // change url location to /tech/aricles/id
+	w.WriteHeader(http.StatusCreated)
+	return
+
 }

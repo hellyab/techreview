@@ -7,7 +7,7 @@ type ArticleRepository interface {
 	GetArticle(id uint) (*entity.Article, []error)
 	// ArticlesByAUser (user *entity.User) ([]*entity.Article, []error)
 	// ArticlesOnATopic (topics []*entity.Topic) ([]*entity.Article, []error)
-	// PostArticle(article *entity.Article) (*entity.Article, []error)
-	UpdateArticle(article *entity.Article) (*entity.Article, []error)
+	PostArticle(article *entity.Article) (*entity.Article, []error)
+	// UpdateArticle(article *entity.Article) (*entity.Article, []error)
 	// DeleteArticle(id string) (*entity.Article, []error)
 }

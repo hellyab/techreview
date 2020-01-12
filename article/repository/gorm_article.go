@@ -39,6 +39,7 @@ func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
 	return &article, errs
 }
 
+// UpdateArticle: updates article
 func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
 	art := article
 	errs := aRepo.conn.Save(art).GetErrors()
@@ -47,4 +48,15 @@ func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Ar
 	}
 	return art, errs
 
+}
+
+// adds new article to db
+
+func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Article, []error) {
+	art := article
+	errs := aRepo.conn.Create(art).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return art, errs
 }
