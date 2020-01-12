@@ -60,3 +60,30 @@ func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Arti
 	}
 	return art, errs
 }
+
+// delete comment from db
+
+func (aRepo *ArticleGormRepo) DeleteArticle(id uint) (*entity.Article, []error) {
+
+	art, errs := aRepo.GetArticle(id) // find the article from the db
+
+	// check for potential errs
+	if len(errs) > 0 {
+		return nil, errs
+	}
+
+	// if not errs finding the article i.e the aricle exists
+
+	errs = aRepo.conn.Delete(art, id).GetErrors() // create conn to db, and delete that aricles with id
+
+	// check for errs
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+
+	// if not errs deleting
+
+	return art, errs // return the deleted article
+
+}

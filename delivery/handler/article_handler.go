@@ -118,3 +118,35 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 	return
 
 }
+
+// Delete article handler
+
+func (ah *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+
+	id, err := strconv.Atoi(params.ByName("id")) // get the id from url params
+
+	// check for errs
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if not errs
+
+	_, errs := ah.articleService.DeleteArticle(uint(id)) // delete the aricle n if successful ignore the deleted aricle
+
+	// check if errs happened
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// if not errs
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
+	return
+}

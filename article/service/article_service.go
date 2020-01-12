@@ -41,3 +41,13 @@ func (as *ArticleService) PostArticle(article *entity.Article) (*entity.Article,
 	}
 	return art, errs
 }
+
+func (as *ArticleService) DeleteArticle(id uint) (*entity.Article, []error) {
+
+	art, errs := as.articleRepo.DeleteArticle(id)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return art, errs
+
+}
