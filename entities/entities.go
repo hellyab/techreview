@@ -13,8 +13,12 @@ type User struct {
 	LastName   string
 	Email      string
 	Password   string
-	Interests  []Topic
-	Privileged bool
+	Interests  []uint8
+}
+
+//TableName changes the name of the table
+func (User) TableName() string {
+	return "person"
 }
 
 //Topic represents an area of topic for articles and user's interests. It has a unique string ID and a Name

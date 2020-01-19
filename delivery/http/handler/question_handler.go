@@ -9,7 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-//QuestionHandler handles menu related requests from a user
+//QuestionHandler handles question related requests from a user
 type QuestionHandler struct {
 	questionService question.QuestionService
 }

@@ -27,9 +27,11 @@ func (userRepo *UserGormRepo) Users() ([]entities.User, []error) {
 }
 
 // User retrieves a user by its id from the database
-func (userRepo *UserGormRepo) User(id uint) (*entities.User, []error) {
+func (userRepo *UserGormRepo) User(id string) (*entities.User, []error) {
 	user := entities.User{}
-	errs := userRepo.conn.First(&user, id).GetErrors()
+	errs := userRepo.conn.Find(&user, "id=?", id).GetErrors()
+
+	// errs := userRepo.conn.First(&user, id).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -57,12 +59,12 @@ func (userRepo *UserGormRepo) UpdateUser(user *entities.User) (*entities.User, [
 }
 
 // DeleteUser deletes a given user from the database
-func (userRepo *UserGormRepo) DeleteUser(id uint) (*entities.User, []error) {
+func (userRepo *UserGormRepo) DeleteUser(id string) (*entities.User, []error) {
 	usr, errs := userRepo.User(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	errs = userRepo.conn.Delete(usr, id).GetErrors()
+	errs = userRepo.conn.Delete(usr).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -79,15 +81,15 @@ func (userRepo *UserGormRepo) StoreUser(user *entities.User) (*entities.User, []
 	return usr, errs
 }
 
-// PhoneExists check if a given phone number is found
-func (userRepo *UserGormRepo) PhoneExists(phone string) bool {
-	user := entities.User{}
-	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
-	if len(errs) > 0 {
-		return false
-	}
-	return true
-}
+// // PhoneExists check if a given phone number is found
+// func (userRepo *UserGormRepo) PhoneExists(phone string) bool {
+// 	user := entities.User{}
+// 	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
+// 	if len(errs) > 0 {
+// 		return false
+// 	}
+// 	return true
+// }
 
 // EmailExists check if a given email is found
 func (userRepo *UserGormRepo) EmailExists(email string) bool {
@@ -99,12 +101,12 @@ func (userRepo *UserGormRepo) EmailExists(email string) bool {
 	return true
 }
 
-// UserRoles returns list of application roles that a given user has
-func (userRepo *UserGormRepo) UserRoles(user *entities.User) ([]entities.Role, []error) {
-	userRoles := []entities.Role{}
-	errs := userRepo.conn.Model(user).Related(&userRoles).GetErrors()
-	if len(errs) > 0 {
-		return nil, errs
-	}
-	return userRoles, errs
-}
+// // UserRoles returns list of application roles that a given user has
+// func (userRepo *UserGormRepo) UserRoles(user *entities.User) ([]entities.Role, []error) {
+// 	userRoles := []entities.Role{}
+// 	errs := userRepo.conn.Model(user).Related(&userRoles).GetErrors()
+// 	if len(errs) > 0 {
+// 		return nil, errs
+// 	}
+// 	return userRoles, errs
+// }

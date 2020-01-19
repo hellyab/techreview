@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -19,6 +18,9 @@ import (
 
 	commRepo "github.com/hellyab/techreview/comment/repository"
 	commServ "github.com/hellyab/techreview/comment/service"
+
+	usRepo "github.com/hellyab/techreview/user/repository"
+	usServ "github.com/hellyab/techreview/user/service"
 )
 
 //roleRepo
@@ -46,6 +48,10 @@ func main() {
 	commentSrv := commServ.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentSrv)
 
+	userRepo := usRepo.NewUserGormRepo(dbconn)
+	userSrv := usServ.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userSrv)
+
 	router := httprouter.New()
 
 	router.GET("/questions", questionHandler.GetQuestions)
@@ -66,6 +72,12 @@ func main() {
 	router.DELETE("/comments/:id", commentHandler.DeleteComment)
 	router.PUT("/comments/:id", commentHandler.PutComment)
 
+	router.GET("/users", userHandler.GetUsers)
+	router.GET("/users/:id", userHandler.GetUser)
+	router.POST("/user", userHandler.AddUser)
+	router.DELETE("/users/:id", userHandler.DeleteUser)
+	router.PUT("/users/:id", userHandler.UpdateUser)
+
 	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
@@ -74,4 +86,3 @@ func main() {
 	http.ListenAndServe(":8181", apiHandler)
 
 }
-
