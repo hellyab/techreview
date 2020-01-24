@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/hellyab/techreview/entities"
@@ -20,7 +21,7 @@ func NewUserHandler(usrService user.UserService) *UserHandler {
 }
 
 //GetUsers handles GET /users requests
-func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	users, errs := uh.userService.Users()
 
 	if len(errs) > 0 {
@@ -42,10 +43,10 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httpro
 }
 
 //GetUser handles GET users/:id request
-func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	user, errs := uh.userService.User(id)
+	usr, errs := uh.userService.User(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -53,7 +54,7 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	output, err := json.MarshalIndent(user, "", "\t")
+	output, err := json.MarshalIndent(usr, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -68,22 +69,26 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, ps httpro
 }
 
 //AddUser handles POST user request
-func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	l := r.ContentLength
 	body := make([]byte, l)
 
 	r.Body.Read(body)
-	user := &entities.User{}
 
-	err := json.Unmarshal(body, user)
+	usr := &entities.User{}
+
+	err := json.Unmarshal(body, usr)
+
+	// fmt.Println(user.Interests)
 
 	if err != nil {
+		fmt.Printf("Error %s", err.Error())
 		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(w, http.StatusText(http.StatusNotExtended), http.StatusNotExtended)
 		return
 	}
 
-	user, errs := uh.userService.StoreUser(user)
+	usr, errs := uh.userService.StoreUser(usr)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -91,14 +96,14 @@ func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	output, err := json.MarshalIndent(user, "", "\t")
+	output, err := json.MarshalIndent(usr, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 	return
@@ -147,7 +152,7 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps htt
 }
 
 //DeleteUser handles DELETE users/:id requests
-func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (uh *UserHandler) DeleteUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
 	deletedUser, errs := uh.userService.DeleteUser(id)

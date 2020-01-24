@@ -1,19 +1,20 @@
 package entities
 
 import (
+	"encoding/json"
 	"time"
 )
 
 //User represents application user and has a string ID (which is still being reconsidered)
 type User struct {
-	ID         string
+	ID         string `json:"ID,omitempty"`
 	Username   string
 	FirstName  string
 	MiddleName string
 	LastName   string
 	Email      string
 	Password   string
-	Interests  []uint8
+	Interests  json.RawMessage
 }
 
 //TableName changes the name of the table
@@ -30,12 +31,16 @@ type Topic struct {
 //Article represents a post by a user. It has a unique ID
 type Article struct {
 	ID              string
-	AuthorName      string
-	Content         string //TODO needs to be looked into
-	Topic           []Topic
+	Author          string
+	Content         json.RawMessage
+	Topics          json.RawMessage
 	AverageRating   float32
 	NumberOfRatings uint
 	PostedAt        time.Time
+}
+
+func (Article) TableName() string {
+	return "article"
 }
 
 //Comment represents comment on article. It has article id and its own unique id.
@@ -65,4 +70,9 @@ type Answer struct {
 	QuestionID string
 	ReplierID  string
 	Answer     string
+}
+
+//TableName changes the name of the table for gorm
+func (Answer) TableName() string {
+	return "answer"
 }

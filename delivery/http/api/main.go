@@ -21,6 +21,9 @@ import (
 
 	usRepo "github.com/hellyab/techreview/user/repository"
 	usServ "github.com/hellyab/techreview/user/service"
+
+	artRepo "github.com/hellyab/techreview/article/repository"
+	artServ "github.com/hellyab/techreview/article/service"
 )
 
 //roleRepo
@@ -52,31 +55,41 @@ func main() {
 	userSrv := usServ.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userSrv)
 
+	articleRepo := artRepo.NewArticleGormRepo(dbconn)
+	articleSrv := artServ.NewArticleService(articleRepo)
+	articleHandler := handler.NewArticleHandler(articleSrv)
+
 	router := httprouter.New()
 
 	router.GET("/questions", questionHandler.GetQuestions)
 	router.GET("/questions/:id", questionHandler.GetQuestion)
-	router.POST("/question", questionHandler.PostQuestion)
+	router.POST("/questions", questionHandler.PostQuestion)
 	router.PUT("/questions/:id", questionHandler.PutQuestion)
 	router.DELETE("/questions/:id", questionHandler.DeleteQuestion)
 
 	router.GET("/answers", answerHandler.GetAnswers)
 	router.GET("/answers/:id", answerHandler.GetAnswer)
-	router.POST("/answer", answerHandler.PostAnswer)
+	router.POST("/answers", answerHandler.PostAnswer)
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
 
 	router.GET("/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
-	router.POST("/comment", commentHandler.UpdateComment)
+	router.POST("/comments", commentHandler.UpdateComment)
 	router.DELETE("/comments/:id", commentHandler.DeleteComment)
 	router.PUT("/comments/:id", commentHandler.PutComment)
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/:id", userHandler.GetUser)
-	router.POST("/user", userHandler.AddUser)
+	router.POST("/users", userHandler.AddUser)
 	router.DELETE("/users/:id", userHandler.DeleteUser)
 	router.PUT("/users/:id", userHandler.UpdateUser)
+
+	router.GET("/articles", articleHandler.GetArticles)
+	router.GET("/articles/:id", articleHandler.GetArticle)
+	router.POST("/articles", articleHandler.PostArticle)
+	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
+	router.PUT("/articles/:id", articleHandler.UpdateArticle)
 
 	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},

@@ -28,14 +28,14 @@ func (userRepo *UserGormRepo) Users() ([]entities.User, []error) {
 
 // User retrieves a user by its id from the database
 func (userRepo *UserGormRepo) User(id string) (*entities.User, []error) {
-	user := entities.User{}
-	errs := userRepo.conn.Find(&user, "id=?", id).GetErrors()
+	usr := entities.User{}
+	errs := userRepo.conn.Find(&usr, "id=?", id).GetErrors()
 
 	// errs := userRepo.conn.First(&user, id).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return &user, errs
+	return &usr, errs
 }
 
 // UserByEmail retrieves a user by its email address from the database
@@ -74,6 +74,7 @@ func (userRepo *UserGormRepo) DeleteUser(id string) (*entities.User, []error) {
 // StoreUser stores a new user into the database
 func (userRepo *UserGormRepo) StoreUser(user *entities.User) (*entities.User, []error) {
 	usr := user
+	// errs := userRepo.conn.Exec("INSERT INTO person(username, first_name, middle_name, last_name, password, email, interests) VALUES (?,?,?,?,?,?,?)", user.Username, user.FirstName, user.MiddleName, user.LastName, user.Password, user.Email, string(user.Interests)).GetErrors()
 	errs := userRepo.conn.Create(usr).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs

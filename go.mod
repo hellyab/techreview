@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/bxcodec/go-clean-arch v2.0.1+incompatible // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.12
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/labstack/echo v3.3.10+incompatible // indirect
