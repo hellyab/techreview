@@ -1,13 +1,14 @@
 package article
 
-import "github.com/hellyab/techreview/entity"
+import "github.com/hellyab/techreview/entities"
 
+//ArticleRepository porvides the interface to store entities
 type ArticleRepository interface {
-	Articles() ([]entity.Article, []error)
-	GetArticle(id uint) (*entity.Article, []error)
-	// ArticlesByAUser (user *entity.User) ([]*entity.Article, []error)
-	// ArticlesOnATopic (topics []*entity.Topic) ([]*entity.Article, []error)
-	PostArticle(article *entity.Article) (*entity.Article, []error)
-	UpdateArticle(article *entity.Article) (*entity.Article, []error)
-	DeleteArticle(id uint) (*entity.Article, []error)
+	Articles() ([]entities.Article, []error)
+	GetArticle(id string) (*entities.Article, []error)
+	// ArticlesByAUser (user *entities.User) ([]*entities.Article, []error)
+	// ArticlesOnATopic (topics []*entities.Topic) ([]*entities.Article, []error)
+	PostArticle(article *entities.Article) (*entities.Article, []error)
+	UpdateArticle(article *entities.Article) (*entities.Article, []error)
+	DeleteArticle(id string) (*entities.Article, []error)
 }

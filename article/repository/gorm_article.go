@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/hellyab/techreview/article"
-	"github.com/hellyab/techreview/entity"
+	"github.com/hellyab/techreview/entities"
 	"github.com/jinzhu/gorm"
 )
 
@@ -19,20 +19,20 @@ func NewArticleGormRepo(db *gorm.DB) article.ArticleRepository {
 }
 
 // Articles gets all articles
-func (aRepo *ArticleGormRepo) Articles() ([]entity.Article, []error) {
-	articles := []entity.Article{}                 //intilize an array of Article entities, so it will be used as a model for GROM
+func (aRepo *ArticleGormRepo) Articles() ([]entities.Article, []error) {
+	articles := []entities.Article{}               //intilize an array of Article entities, so it will be used as a model for GROM
 	errs := aRepo.conn.Find(&articles).GetErrors() // growm implementation of finiding array of articles
 
-	if len(errs) > 0 { // if there are erros return nil for data requested and also return array of errs
+	if len(errs) > 0 { // if there are erros return nil for handler requested and also return array of errs
 		return nil, errs
 	}
 	return articles, errs
 }
 
 //GetArticle gets article by id
-func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
-	article := entity.Article{}
-	errs := aRepo.conn.First(&article, id).GetErrors()
+func (aRepo *ArticleGormRepo) GetArticle(id string) (*entities.Article, []error) {
+	article := entities.Article{}
+	errs := aRepo.conn.Where("id = ?", id).First(&article).GetErrors()
 
 	if len(errs) > 0 {
 		return nil, errs
@@ -41,7 +41,7 @@ func (aRepo *ArticleGormRepo) GetArticle(id uint) (*entity.Article, []error) {
 }
 
 //PostArticle adds new article to db
-func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Article, []error) {
+func (aRepo *ArticleGormRepo) PostArticle(article *entities.Article) (*entities.Article, []error) {
 	art := article
 	errs := aRepo.conn.Create(art).GetErrors()
 	if len(errs) > 0 {
@@ -50,20 +50,25 @@ func (aRepo *ArticleGormRepo) PostArticle(article *entity.Article) (*entity.Arti
 	return art, errs
 }
 
-//DeleteArticle deletes article	// get the aricle sturct pointer n assing to art from db
+//DeleteArticle deletes article	 get the aricle sturct pointer n assing to art from db
+func (aRepo *ArticleGormRepo) DeleteArticle(id string) (*entities.Article, []error) {
 
-func (aRepo *ArticleGormRepo) DeleteArticle(id uint) (*entity.Article, []error) {
-
-	art, errs := aRepo.GetArticle(id) // find the article from the db
-
-	// check for potential errs
+	article, errs := aRepo.GetArticle(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}
+	
+	// errs := aRepo.conn.Where("id = ?", id).First(&article).GetErrors()
+	// // find the article from the db
+
+	// // check for potential errs
+	// if len(errs) > 0 {
+	// 	return nil, errs
+	// }
 
 	// if not errs finding the article i.e the aricle exists
 
-	errs = aRepo.conn.Delete(art, id).GetErrors() // create conn to db, and delete that aricles with id
+	errs = aRepo.conn.Delete(article).GetErrors() // create conn to db, and delete that aricles with id
 
 	// check for errs
 
@@ -73,13 +78,12 @@ func (aRepo *ArticleGormRepo) DeleteArticle(id uint) (*entity.Article, []error) 
 
 	// if not errs deleting
 
-	return art, errs // return the deleted article
+	return article, errs // return the deleted article
 
 }
 
 //UpdateArticle updates article
-
-func (aRepo *ArticleGormRepo) UpdateArticle(article *entity.Article) (*entity.Article, []error) {
+func (aRepo *ArticleGormRepo) UpdateArticle(article *entities.Article) (*entities.Article, []error) {
 
 	art := article                           // get the aricle sturct pointer n assing to art
 	errs := aRepo.conn.Save(art).GetErrors() // do orm method SAVE
