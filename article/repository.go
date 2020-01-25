@@ -1,11 +1,9 @@
 package article
 
-import (
-	"github.com/hellyab/techreview/entities"
-)
+import "github.com/hellyab/techreview/entities"
 
-//ArticleService specifies article related actions
-type ArticleService interface {
+//ArticleRepository porvides the interface to store entities
+type ArticleRepository interface {
 	Articles() ([]entities.Article, []error)
 	GetArticle(id string) (*entities.Article, []error)
 	// ArticlesByAUser (user *entities.User) ([]*entities.Article, []error)

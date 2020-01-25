@@ -7,12 +7,12 @@ import (
 // UserRepository specifies application user related database operations
 type UserRepository interface {
 	Users() ([]entities.User, []error)
-	User(id uint) (*entities.User, []error)
+	User(id string) (*entities.User, []error)
 	UserByEmail(email string) (*entities.User, []error)
 	UpdateUser(user *entities.User) (*entities.User, []error)
-	DeleteUser(id uint) (*entities.User, []error)
+	DeleteUser(id string) (*entities.User, []error)
 	StoreUser(user *entities.User) (*entities.User, []error)
-	PhoneExists(phone string) bool
+	// PhoneExists(phone string) bool
 	EmailExists(email string) bool
 	UserRoles(*entities.User) ([]entities.Role, []error)
 }

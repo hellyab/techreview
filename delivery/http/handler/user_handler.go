@@ -2,26 +2,27 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/hellyab/techreview/entities"
-	"github.com/hellyab/techreview/question"
+	"github.com/hellyab/techreview/user"
 	"github.com/julienschmidt/httprouter"
 )
 
-//QuestionHandler handles question related requests from a user
-type QuestionHandler struct {
-	questionService question.QuestionService
+//UserHandler handles user related reuqests
+type UserHandler struct {
+	userService user.UserService
 }
 
-//NewQuestionHandler (for user) returns new QuestionHandler object
-func NewQuestionHandler(qstnService question.QuestionService) *QuestionHandler {
-	return &QuestionHandler{questionService: qstnService}
+//NewUserHandler returns new UserHandler
+func NewUserHandler(usrService user.UserService) *UserHandler {
+	return &UserHandler{userService: usrService}
 }
 
-//GetQuestions (for user)handles GET /questions request
-func (qh *QuestionHandler) GetQuestions(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	questions, errs := qh.questionService.Questions()
+//GetUsers handles GET /users requests
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
+	users, errs := uh.userService.Users()
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -29,25 +30,23 @@ func (qh *QuestionHandler) GetQuestions(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	output, err := json.MarshalIndent(questions, "", "\t")
+	output, err := json.MarshalIndent(users, "", "\t")
 
 	if err != nil {
-		w.Header().Set("Content-Type", "applcation/json")
+		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
-
 }
 
-//GetQuestion handles GET questions/:id request
-func (qh *QuestionHandler) GetQuestion(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
+//GetUser handles GET users/:id request
+func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	question, errs := qh.questionService.Question(id)
+	usr, errs := uh.userService.User(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -55,7 +54,7 @@ func (qh *QuestionHandler) GetQuestion(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	output, err := json.MarshalIndent(question, "", "\t")
+	output, err := json.MarshalIndent(usr, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -69,70 +68,40 @@ func (qh *QuestionHandler) GetQuestion(w http.ResponseWriter, r *http.Request, p
 
 }
 
-//PostQuestion handles POST question request
-func (qh *QuestionHandler) PostQuestion(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
+//AddUser handles POST user request
+func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	l := r.ContentLength
-	body := make([]byte, l)
-	r.Body.Read(body)
-	question := &entities.Question{}
-
-	err := json.Unmarshal(body, question)
-
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
-
-	question, errs := qh.questionService.StoreQuestion(question)
-
-	if len(errs) > 0 {
-		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
-
-	p := "questions/" + question.ID
-
-	w.Header().Set("Location", p)
-	http.Error(w, http.StatusText(http.StatusCreated), http.StatusCreated)
-	return
-}
-
-//PutQuestion handles PUT questions/:id request
-func (qh *QuestionHandler) PutQuestion(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	id := ps.ByName("id")
-
-	question, errs := qh.questionService.Question(id)
-
-	if len(errs) > 0 {
-		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
-
-	l := r.ContentLength
-
 	body := make([]byte, l)
 
 	r.Body.Read(body)
 
-	json.Unmarshal(body, &question)
+	usr := &entities.User{}
 
-	question, errs = qh.questionService.UpdateQuestion(question)
+	err := json.Unmarshal(body, usr)
 
+	// fmt.Println(user.Interests)
+
+	if err != nil {
+		fmt.Printf("Error %s", err.Error())
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotExtended), http.StatusNotExtended)
+		return
+	}
+
+	usr, errs := uh.userService.StoreUser(usr)
+	fmt.Println(usr)
 	if len(errs) > 0 {
+		fmt.Println(errs)
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	output, err := json.MarshalIndent(question, "", "\t")
+	output, err := json.MarshalIndent(usr, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 		return
 	}
 
@@ -142,11 +111,11 @@ func (qh *QuestionHandler) PutQuestion(w http.ResponseWriter, r *http.Request, p
 
 }
 
-//DeleteQuestion handles DELETE questions/:id request
-func (qh *QuestionHandler) DeleteQuestion(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+//UpdateUser handles PUT users/:id requests
+func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	deletedQuestion, errs := qh.questionService.DeleteQuestion(id)
+	user, errs := uh.userService.User(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -154,17 +123,57 @@ func (qh *QuestionHandler) DeleteQuestion(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// log.Println(deletedQuestion)
-	output, err := json.MarshalIndent(deletedQuestion, "", "\t")
+	l := r.ContentLength
+
+	body := make([]byte, l)
+
+	r.Body.Read(body)
+
+	json.Unmarshal(body, &user)
+
+	user, errs = uh.userService.UpdateUser(user)
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(user, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	// log.Println(output)
+
 	w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusNoContent)
 	w.Write(output)
 	return
+}
+
+//DeleteUser handles DELETE users/:id requests
+func (uh *UserHandler) DeleteUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
+	id := ps.ByName("id")
+
+	deletedUser, errs := uh.userService.DeleteUser(id)
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(deletedUser, "", "\t")
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+
 }

@@ -1,21 +1,28 @@
 package entities
 
 import (
-	"time"
+	"encoding/json"
 )
 
 //User represents application user and has a string ID (which is still being reconsidered)
 type User struct {
-	ID         string
+
+	ID         string `json:"ID,omitempty"`
 	Username   string
 	FirstName  string
 	MiddleName string
 	LastName   string
 	Email      string
 	Password   string
-	Interests  []Topic
-	Privileged bool
+	RoleID     uint
+	Interests  json.RawMessage
+
 }
+
+//TableName changes the name of the table
+//func (User) TableName() string {
+//	return "person"
+//}
 
 //Topic represents an area of topic for articles and user's interests. It has a unique string ID and a Name
 type Topic struct {
@@ -26,12 +33,17 @@ type Topic struct {
 //Article represents a post by a user. It has a unique ID
 type Article struct {
 	ID              string
-	AuthorName      string
-	Content         string //TODO needs to be looked into
-	Topic           []Topic
+	Author          string
+	Content         json.RawMessage
+	Topics          json.RawMessage
 	AverageRating   float32
 	NumberOfRatings uint
 	PostedAt        time.Time
+}
+
+func (Article) TableName() string {
+	return "article"
+
 }
 
 //Comment represents comment on article. It has article id and its own unique id.
@@ -61,4 +73,24 @@ type Answer struct {
 	QuestionID string
 	ReplierID  string
 	Answer     string
+}
+
+//TableName changes the name of the table for gorm
+func (Answer) TableName() string {
+	return "answer"
+}
+
+//Session represents login user session
+type Session struct {
+	ID         uint
+	UUID       string `gorm:"type:varchar(255);not null"`
+	Expires    int64  `gorm:"type:varchar(255);not null"`
+	SigningKey []byte `gorm:"type:varchar(255);not null"`
+}
+
+// Role repesents application user roles
+type Role struct {
+	ID    uint
+	Name  string `gorm:"type:varchar(255)"`
+	Users []User
 }
