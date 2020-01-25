@@ -19,11 +19,13 @@ import (
 	commRepo "github.com/hellyab/techreview/comment/repository"
 	commServ "github.com/hellyab/techreview/comment/service"
 
+
 	usRepo "github.com/hellyab/techreview/user/repository"
 	usServ "github.com/hellyab/techreview/user/service"
 
 	artRepo "github.com/hellyab/techreview/article/repository"
 	artServ "github.com/hellyab/techreview/article/service"
+
 )
 
 //roleRepo
@@ -50,6 +52,7 @@ func main() {
 	commentRepo := commRepo.NewCommentGormRepo(dbconn)
 	commentSrv := commServ.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentSrv)
+
 
 	userRepo := usRepo.NewUserGormRepo(dbconn)
 	userSrv := usServ.NewUserService(userRepo)
@@ -90,7 +93,7 @@ func main() {
 	router.POST("/articles", articleHandler.PostArticle)
 	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
-
+  
 	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},

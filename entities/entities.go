@@ -2,11 +2,11 @@ package entities
 
 import (
 	"encoding/json"
-	"time"
 )
 
 //User represents application user and has a string ID (which is still being reconsidered)
 type User struct {
+
 	ID         string `json:"ID,omitempty"`
 	Username   string
 	FirstName  string
@@ -16,6 +16,7 @@ type User struct {
 	Password   string
 	RoleID     uint
 	Interests  json.RawMessage
+
 }
 
 //TableName changes the name of the table
@@ -42,6 +43,7 @@ type Article struct {
 
 func (Article) TableName() string {
 	return "article"
+
 }
 
 //Comment represents comment on article. It has article id and its own unique id.

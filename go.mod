@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/bxcodec/go-clean-arch v2.0.1+incompatible // indirect
+
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/google/uuid v1.1.1
