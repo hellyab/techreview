@@ -96,7 +96,7 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 			fmt.Println("errors fetching the user")
 			return nil, errsForUser
 		}
-
+		// test
 		ansByQ.AnsweredByFirstName = user.FirstName
 		ansByQ.AnsweredByUserName = user.Username
 		ansByQ.AnsweredByLastName = user.LastName
