@@ -1,4 +1,3 @@
-
 package service
 
 import (
@@ -54,4 +53,3 @@ func (cs *CommentService) DeleteComment(id uint) (*entities.Comment, []error) {
 	}
 	return cmnt, errs
 }
-

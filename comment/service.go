@@ -1,4 +1,3 @@
-
 package comment
 
 import "github.com/hellyab/techreview/entities"
@@ -10,4 +9,3 @@ type CommentService interface {
 	DeleteComment(id uint) (*entities.Comment, []error)
 	StoreComment(comment *entities.Comment) (*entities.Comment, []error)
 }
-

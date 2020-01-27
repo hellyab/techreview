@@ -97,8 +97,9 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 			return nil, errsForUser
 		}
 
-		ansByQ.AskedByFirstName = user.FirstName
-		ansByQ.AskedByUserName = user.Username
+		ansByQ.AnsweredByFirstName = user.FirstName
+		ansByQ.AnsweredByUserName = user.Username
+		ansByQ.AnsweredByLastName = user.LastName
 		ansByQ.Votes = int(ans.Votes)
 		ansByQ.Answer = ans.Answer
 		ansByQ.AnswerId = ans.ID
