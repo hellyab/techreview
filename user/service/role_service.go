@@ -36,7 +36,7 @@ func (rs *RoleService) RoleByName(name string) (*entities.Role, []error) {
 }
 
 // Role retrievs a given user role by its id
-func (rs *RoleService) Role(id string) (*entities.Role, []error) {
+func (rs *RoleService) Role(id uint) (*entities.Role, []error) {
 	rl, errs := rs.roleRepo.Role(id)
 	if len(errs) > 0 {
 		return nil, errs
@@ -56,7 +56,7 @@ func (rs *RoleService) UpdateRole(role *entities.Role) (*entities.Role, []error)
 }
 
 // DeleteRole deletes a given user role
-func (rs *RoleService) DeleteRole(id string) (*entities.Role, []error) {
+func (rs *RoleService) DeleteRole(id uint) (*entities.Role, []error) {
 
 	rl, errs := rs.roleRepo.DeleteRole(id)
 	if len(errs) > 0 {
