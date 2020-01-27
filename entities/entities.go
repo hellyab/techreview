@@ -110,9 +110,9 @@ type Role struct {
 type AnswersByQuesId struct{
 	Votes int
 	Answer string
-	AskedByUserName string
-	AskedByFirstName string
-	AskedByLastName string
+	AnsweredByUserName string
+	AnsweredByFirstName string
+	AnsweredByLastName string
 	AnswerId string
 
 }
