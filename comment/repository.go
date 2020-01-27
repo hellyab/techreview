@@ -1,6 +1,8 @@
 package comment
 
-import "github.com/hellyab/techreview/entities"
+import (
+	"github.com/hellyab/techreview/entities"
+)
 
 type CommentRepository interface {
 	Comments() ([]entities.Comment, []error)

@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/hellyab/techreview/answer"
+	"github.com/hellyab/techreview/entities"
 	"net/http"
 	
 
-	"github.com/hellyab/techreview/entities"
-	"github.com/hellyab/techreview/answer"
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -167,6 +168,33 @@ func (ah *AnswerHandler) DeleteAnswer(w http.ResponseWriter, r *http.Request, ps
 	// log.Println(output)
 	w.Header().Set("Content-Type", "application/json")
 	// w.WriteHeader(http.StatusNoContent)
+	w.Write(output)
+	return
+}
+
+
+func (ah *AnswerHandler) GetAnswersByQuestionId(w http.ResponseWriter, _ *http.Request, params httprouter.Params){
+
+
+	id := params.ByName("questionId")
+
+	answersByQuesId, errs := ah.answerService.AnswersByQuestionId(id)
+
+	if len(errs) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(answersByQuesId, "", "\t")
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 	return
 }

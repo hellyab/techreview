@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/rtoken"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"html/template"
@@ -27,7 +28,7 @@ import (
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func createTables(dbconn *gorm.DB) []error {
-	errs := dbconn.CreateTable(&entities.User{}, &entities.Role{}).GetErrors()
+
 	if errs != nil {
 		return errs
 	}
@@ -37,10 +38,6 @@ func createTables(dbconn *gorm.DB) []error {
 func main() {
 	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
 
-	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tech_review_test?sslmode=disable") //TODO handle errors later
-	if err != nil {
-		fmt.Printf("Error %s", err)
-	}
 	//errs := createTables(dbconn)
 	//if len(errs)>0{
 	//	fmt.Println(errs)
@@ -61,7 +58,7 @@ func main() {
 	sess := configSess()
 	uh := handler.NewUserHandler(templates, userServ, sessionSrv, roleServ, sess, csrfSignKey)
 
-	mux.HandleFunc("/questions", allQuestions)
+	mux.Handle("/questions", uh.Authenticated(http.HandlerFunc(allQuestions)))
 	mux.HandleFunc("/userentry", uh.Signup)
 	mux.HandleFunc("/signup", uh.Signup)
 	mux.HandleFunc("/login", uh.Login)
@@ -84,6 +81,7 @@ func allQuestions(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	templates.ExecuteTemplate(w, "questions.html", Questions)
+
 
 }
 

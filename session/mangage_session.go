@@ -3,10 +3,11 @@ package session
 import (
 	"errors"
 	"fmt"
+
+	"github.com/hellyab/techreview/rtoken"
 	"net/http"
 	"time"
 
-	"github.com/hellyab/techreview/rtoken"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -41,7 +42,7 @@ func Remove(sessionID string, w http.ResponseWriter) {
 	c := http.Cookie{
 		Name:    sessionID,
 		MaxAge:  -1,
-		Expires: time.Unix(1, 0),
+		Expires: time.Unix(-1, 0),
 		Value:   "",
 	}
 	http.SetCookie(w, &c)

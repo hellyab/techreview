@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
-	"github.com/rs/cors"
+
 
 	"github.com/hellyab/techreview/delivery/http/handler"
 
@@ -31,7 +31,11 @@ import (
 //some role handler
 
 func main() {
+<<<<<<< HEAD
 	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/techreview?sslmode=disable")
+=======
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:Binaman1!@localhost/techreview?sslmode=disable")
+>>>>>>> remotes/origin/master
 
 	if err != nil {
 		panic(err)
@@ -74,12 +78,16 @@ func main() {
 	router.POST("/questions", questionHandler.PostQuestion)
 	router.PUT("/questions/:id", questionHandler.PutQuestion)
 	router.DELETE("/questions/:id", questionHandler.DeleteQuestion)
+	router.POST("/questions/follows",questionHandler.FollowQuestion)
+	router.POST("/questions/follows/status", questionHandler.FollowedByUser)
+	router.GET("/follows/:quesId", questionHandler.FollowCount)
 
 	router.GET("/answers", answerHandler.GetAnswers)
 	router.GET("/answers/:id", answerHandler.GetAnswer)
 	router.POST("/answers", answerHandler.PostAnswer)
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
+	router.GET("/answersbyquestion/:questionId", answerHandler.GetAnswersByQuestionId)
 
 	router.GET("/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
@@ -92,6 +100,7 @@ func main() {
 	router.POST("/articles", articleHandler.PostArticle)
 	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
+<<<<<<< HEAD
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/id=:id", userHandler.GetUser)
@@ -119,4 +128,33 @@ func main() {
 
 	http.ListenAndServe("localhost:8181", apiHandler)
 
+=======
+
+	router.GET("/users", userHandler.GetUsers)
+	router.GET("/users/id=:id", userHandler.GetUser)
+	router.GET("/users/username/:username", userHandler.GetUserByUsername)
+	router.POST("/users", userHandler.AddUser)
+	router.DELETE("/users/:id", userHandler.DeleteUser)
+	router.PUT("/users/:id", userHandler.UpdateUser)
+
+	router.GET("/roles", roleHandler.GetRoles)
+	router.GET("/roles/id=:id", roleHandler.GetRole)
+	router.GET("/role/name/:name", roleHandler.GetRoleByName)
+	router.POST("/roles", roleHandler.AddRole)
+	router.DELETE("/roles/:id", roleHandler.DeleteRole)
+	router.PUT("/roles/:id", roleHandler.UpdateRole)
+
+	router.GET("/sessions/:id", sessHandler.GetSession)
+	router.POST("/sessions", sessHandler.AddSession)
+	router.DELETE("/sessions/:id", sessHandler.DeleteSession)
+
+
+	//apiHandler := cors.New(cors.Options{
+	//	AllowedOrigins: []string{"*"},
+	//	AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
+	//}).Handler(router)
+
+	http.ListenAndServe("localhost:8181", router)
+
+>>>>>>> remotes/origin/master
 }

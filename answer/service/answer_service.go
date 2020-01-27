@@ -57,14 +57,16 @@ func (as *AnswerService) StoreAnswer(answer *entities.Answer) (*entities.Answer,
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return qstn, errs
+	//changed
+	return qstn, nil
 }
 
-//QuestionAnswers returns answers for a question
-func (as *AnswerService) QuestionAnswers(question *entities.Question, answer *entities.Answer) ([]entities.Answer, []error) {
-	qstns, errs := as.answerRepo.QuestionAnswers(question, answer)
+func (as *AnswerService) AnswersByQuestionId(questionId string) ([]entities.AnswersByQuesId, []error) {
+	answers, errs := as.answerRepo.AnswersByQuestionId(questionId)
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return qstns, errs
+	return answers, nil
 }
+
+

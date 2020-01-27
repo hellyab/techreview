@@ -2,10 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"net/http"
-
+	"fmt"
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/question"
+	"net/http"
+
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -80,23 +82,31 @@ func (qh *QuestionHandler) PostQuestion(w http.ResponseWriter, r *http.Request, 
 	err := json.Unmarshal(body, question)
 
 	if err != nil {
+		fmt.Println("errors while puting the json in to the struct")
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+	fmt.Println("successfully unmarshed the json body")
 
 	question, errs := qh.questionService.StoreQuestion(question)
 
-	if len(errs) > 0 {
+	if errs != nil{
+		fmt.Println("error while stroing the question")
+	}
+
+	output, err := json.MarshalIndent(question, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marhsing the srct to json")
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+	fmt.Println("we got the output as json")
 
-	p := "questions/" + question.ID
-
-	w.Header().Set("Location", p)
-	http.Error(w, http.StatusText(http.StatusCreated), http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
 	return
 }
 
@@ -123,6 +133,7 @@ func (qh *QuestionHandler) PutQuestion(w http.ResponseWriter, r *http.Request, p
 	question, errs = qh.questionService.UpdateQuestion(question)
 
 	if len(errs) > 0 {
+
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -131,10 +142,12 @@ func (qh *QuestionHandler) PutQuestion(w http.ResponseWriter, r *http.Request, p
 	output, err := json.MarshalIndent(question, "", "\t")
 
 	if err != nil {
+
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+	fmt.Println("we got the output as json")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
@@ -167,4 +180,108 @@ func (qh *QuestionHandler) DeleteQuestion(w http.ResponseWriter, r *http.Request
 	// w.WriteHeader(http.StatusNoContent)
 	w.Write(output)
 	return
+}
+
+
+func (qh *QuestionHandler) FollowQuestion(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	l := r.ContentLength
+	body := make([]byte, l)
+	r.Body.Read(body)
+	questionFollow := &entities.QuestionFollow{}
+
+	err := json.Unmarshal(body, questionFollow)
+
+	if err != nil {
+		fmt.Println("errors while puting the json in to the questionFollow struct")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	fmt.Println("successfully unmarshed the json body")
+
+	questionExists:= qh.questionService.FollowQuestion(questionFollow.QuestionID, questionFollow.UserID)
+
+	if !questionExists{
+		fmt.Println("quesition dosen't exist", questionExists)
+	}
+
+	output, err := json.MarshalIndent(questionExists, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marhsing the questionExists boolean to json")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	fmt.Println("we got the output as json, the question exist boolean")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+}
+
+
+func (qh *QuestionHandler) FollowedByUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	l := r.ContentLength
+	body := make([]byte, l)
+	r.Body.Read(body)
+	questionFollow := &entities.QuestionFollow{}
+
+	err := json.Unmarshal(body, questionFollow)
+
+	if err != nil {
+		fmt.Println("errors while puting the json in to the questionFollow struct")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	fmt.Println("successfully unmarshed the json body")
+
+	questionExists:= qh.questionService.FollowedByUser(questionFollow)
+
+
+	output, err := json.MarshalIndent(questionExists, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marhsing the questionExists boolean to json")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	fmt.Println("we got the output as json, the question exist boolean")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+}
+
+
+func (qh *QuestionHandler) FollowCount(w http.ResponseWriter, r *http.Request, params httprouter.Params){
+
+	quesId := params.ByName("quesId")
+
+	quesCount := qh.questionService.FollowCount(quesId)
+
+	if quesCount == -1 {
+		fmt.Println("not working")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	output, err := json.MarshalIndent(quesCount, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marshaling")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+
 }

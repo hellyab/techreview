@@ -11,4 +11,7 @@ type QuestionService interface {
 	UpdateQuestion(question *entities.Question) (*entities.Question, []error)
 	DeleteQuestion(id string) (*entities.Question, []error)
 	StoreQuestion(question *entities.Question) (*entities.Question, []error)
+	FollowQuestion(questionId, userId string) (bool)
+	FollowedByUser(questionFollow *entities.QuestionFollow)bool
+	FollowCount(questionId string)int
 }
