@@ -34,8 +34,8 @@ func (us *UserService) User(id string) (*entities.User, []error) {
 }
 
 // UserByEmail retrieves an application user by its email address
-func (us *UserService) UserByEmail(email string) (*entities.User, []error) {
-	usr, errs := us.userRepo.UserByEmail(email)
+func (us *UserService) UserByUsername(username string) (*entities.User, []error) {
+	usr, errs := us.userRepo.UserByUsername(username)
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -81,11 +81,11 @@ func (us *UserService) EmailExists(email string) bool {
 	return exists
 }
 
-// // UserRoles returns list of roles a user has
-// func (us *UserService) UserRoles(user *entities.User) ([]entities.Role, []error) {
-// 	userRoles, errs := us.userRepo.UserRoles(user)
-// 	if len(errs) > 0 {
-// 		return nil, errs
-// 	}
-// 	return userRoles, errs
-// }
+// UserRoles returns list of roles a user has
+func (us *UserService) UserRoles(user *entities.User) ([]entities.Role, []error) {
+	userRoles, errs := us.userRepo.UserRoles(user)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}

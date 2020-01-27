@@ -39,9 +39,9 @@ func (userRepo *UserGormRepo) User(id string) (*entities.User, []error) {
 }
 
 // UserByEmail retrieves a user by its email address from the database
-func (userRepo *UserGormRepo) UserByEmail(email string) (*entities.User, []error) {
+func (userRepo *UserGormRepo) UserByUsername(username string) (*entities.User, []error) {
 	user := entities.User{}
-	errs := userRepo.conn.Find(&user, "email=?", email).GetErrors()
+	errs := userRepo.conn.Find(&user, "username=?", username).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -102,12 +102,12 @@ func (userRepo *UserGormRepo) EmailExists(email string) bool {
 	return true
 }
 
-// // UserRoles returns list of application roles that a given user has
-// func (userRepo *UserGormRepo) UserRoles(user *entities.User) ([]entities.Role, []error) {
-// 	userRoles := []entities.Role{}
-// 	errs := userRepo.conn.Model(user).Related(&userRoles).GetErrors()
-// 	if len(errs) > 0 {
-// 		return nil, errs
-// 	}
-// 	return userRoles, errs
-// }
+// UserRoles returns list of application roles that a given user has
+func (userRepo *UserGormRepo) UserRoles(user *entities.User) ([]entities.Role, []error) {
+	userRoles := []entities.Role{}
+	errs := userRepo.conn.Model(user).Related(&userRoles).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}

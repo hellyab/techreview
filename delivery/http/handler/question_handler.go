@@ -19,7 +19,7 @@ func NewQuestionHandler(qstnService question.QuestionService) *QuestionHandler {
 	return &QuestionHandler{questionService: qstnService}
 }
 
-//GetQuestions (for user)handles GET /questions request
+//GetQuestions (for us er)handles GET /questions request
 func (qh *QuestionHandler) GetQuestions(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	questions, errs := qh.questionService.Questions()
 

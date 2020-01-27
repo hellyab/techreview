@@ -3,7 +3,12 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/hellyab/techreview/entities"
+	"github.com/hellyab/techreview/rtoken"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"html/template"
+	"time"
 
 	// "io/ioutil"
 	// "log"
@@ -12,29 +17,64 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/hellyab/techreview/client/data"
-	"github.com/hellyab/techreview/delivery/http/handler"
+	"github.com/hellyab/techreview/client/handler"
+	api "github.com/hellyab/techreview/delivery/http/handler"
+
+	usrRep "github.com/hellyab/techreview/user/repository"
+	usrSrv "github.com/hellyab/techreview/user/service"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
+func createTables(dbconn *gorm.DB) []error {
+	errs := dbconn.CreateTable(&entities.User{}, &entities.Role{}).GetErrors()
+	if errs != nil {
+		return errs
+	}
+	return nil
+}
+
 func main() {
+	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
+
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tech_review_test?sslmode=disable") //TODO handle errors later
+	if err != nil {
+		fmt.Printf("Error %s", err)
+	}
+	//errs := createTables(dbconn)
+	//if len(errs)>0{
+	//	fmt.Println(errs)
+	//}
+	sessionRepo := usrRep.NewSessionGormRepo(dbconn)
+	sessionSrv := usrSrv.NewSessionService(sessionRepo)
+
+	roleRepo := usrRep.NewRoleGormRepo(dbconn)
+	roleServ := usrSrv.NewRoleService(roleRepo)
+
+	userRepo := usrRep.NewUserGormRepo(dbconn)
+	userServ := usrSrv.NewUserService(userRepo)
+
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("assets"))
 	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
+	sess := configSess()
+	uh := handler.NewUserHandler(templates, userServ, sessionSrv, roleServ, sess, csrfSignKey)
+
 	mux.HandleFunc("/questions", allQuestions)
-	mux.HandleFunc("/userentry", userEntry)
-	mux.HandleFunc("/newuser", registerUser)
+	mux.HandleFunc("/userentry", uh.Signup)
+	mux.HandleFunc("/signup", uh.Signup)
+	mux.HandleFunc("/login", uh.Login)
 	mux.HandleFunc("/upload", uploadHandler)
 	mux.HandleFunc("/article", articleHandler)
+	mux.Handle("/logout", uh.Authenticated(http.HandlerFunc(uh.Logout)))
 
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe("localhost:8080", mux)
 
 }
 
 func allQuestions(w http.ResponseWriter, _ *http.Request) {
-	Questions, err := data.FetchQuestions()
+	Questions, err := handler.FetchQuestions()
 
 	if err != nil {
 		w.WriteHeader(http.StatusNoContent)
@@ -43,7 +83,7 @@ func allQuestions(w http.ResponseWriter, _ *http.Request) {
 		//tmpl.ExecuteTemplate(w, "error.layout", nil)
 	}
 
-	templates.ExecuteTemplate(w, "question.html", Questions)
+	templates.ExecuteTemplate(w, "questions.html", Questions)
 
 }
 
@@ -112,7 +152,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		fileName, err := handler.UploadImage(w, r, file, header)
+		fileName, err := api.UploadImage(w, r, file, header)
 		URLSafeFileName := url.PathEscape(fileName)
 
 		errorResponseJSON := fmt.Sprintf(`{
@@ -147,4 +187,20 @@ func userEntry(w http.ResponseWriter, _ *http.Request) {
 
 func articleHandler(w http.ResponseWriter, _ *http.Request) {
 	templates.ExecuteTemplate(w, "editor.html", nil)
+}
+
+func configSess() *entities.Session {
+	tokenExpires := time.Now().Add(time.Minute * 1).Unix()
+	sessionID := rtoken.GenerateRandomID(32)
+	signingString, err := rtoken.GenerateRandomString(32)
+	if err != nil {
+		panic(err)
+	}
+	signingKey := []byte(signingString)
+
+	return &entities.Session{
+		Expires:    tokenExpires,
+		SigningKey: signingKey,
+		UUID:       sessionID,
+	}
 }

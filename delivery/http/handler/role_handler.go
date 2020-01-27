@@ -10,19 +10,19 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-//UserHandler handles user related reuqests
-type UserHandler struct {
-	userService user.UserService
+//RoleHandler handles user related reuqests
+type RoleHandler struct {
+	userService user.RoleService
 }
 
-//NewUserHandler returns new UserHandler
-func NewUserHandler(usrService user.UserService) *UserHandler {
-	return &UserHandler{userService: usrService}
+//NewRoleHandler returns new RoleHandler
+func NewRoleHandler(usrService user.RoleService) *RoleHandler {
+	return &RoleHandler{userService: usrService}
 }
 
-//GetUsers handles GET /users requests
-func (uh *UserHandler) GetUsers(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
-	users, errs := uh.userService.Users()
+//GetRoles handles GET /users requests
+func (uh *RoleHandler) GetRoles(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
+	users, errs := uh.userService.Roles()
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -42,11 +42,11 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, _ *http.Request, _ httpro
 	_, _ = w.Write(output)
 }
 
-//GetUser handles GET users/:id request
-func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
+//GetRole handles GET users/:id request
+func (uh *RoleHandler) GetRole(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	usr, errs := uh.userService.User(id)
+	rol, errs := uh.userService.Role(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -54,7 +54,7 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httpro
 		return
 	}
 
-	output, err := json.MarshalIndent(usr, "", "\t")
+	output, err := json.MarshalIndent(rol, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -63,16 +63,16 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httpro
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(output)
+	w.Write(output)
 	return
 
 }
 
-//GetUserByUsername handles GET userbyusername/:username requests
-func (uh *UserHandler) GetUserByUsername(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
-	username := ps.ByName("username")
+//GetRole handles GET users/byName/:name request
+func (uh *RoleHandler) GetRoleByName(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
+	name := ps.ByName("name")
 
-	usr, errs := uh.userService.UserByUsername(username)
+	rol, errs := uh.userService.RoleByName(name)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -80,7 +80,7 @@ func (uh *UserHandler) GetUserByUsername(w http.ResponseWriter, _ *http.Request,
 		return
 	}
 
-	output, err := json.MarshalIndent(usr, "", "\t")
+	output, err := json.MarshalIndent(rol, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -89,21 +89,21 @@ func (uh *UserHandler) GetUserByUsername(w http.ResponseWriter, _ *http.Request,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(output)
+	w.Write(output)
 	return
 
 }
 
-//AddUser handles POST user request
-func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+//AddRole handles POST user request
+func (uh *RoleHandler) AddRole(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	l := r.ContentLength
 	body := make([]byte, l)
 
 	_, _ = r.Body.Read(body)
 
-	usr := &entities.User{}
+	rol := &entities.Role{}
 
-	err := json.Unmarshal(body, usr)
+	err := json.Unmarshal(body, rol)
 
 	// fmt.Println(user.Interests)
 
@@ -114,8 +114,8 @@ func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprou
 		return
 	}
 
-	usr, errs := uh.userService.StoreUser(usr)
-	fmt.Println(usr)
+	rol, errs := uh.userService.StoreRole(rol)
+	fmt.Println(rol)
 	if len(errs) > 0 {
 		fmt.Println(errs)
 		w.Header().Set("Content-Type", "application/json")
@@ -123,7 +123,7 @@ func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprou
 		return
 	}
 
-	output, err := json.MarshalIndent(usr, "", "\t")
+	output, err := json.MarshalIndent(rol, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -137,11 +137,11 @@ func (uh *UserHandler) AddUser(w http.ResponseWriter, r *http.Request, _ httprou
 
 }
 
-//UpdateUser handles PUT users/:id requests
-func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+//UpdateRole handles PUT users/:id requests
+func (uh *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	usr, errs := uh.userService.User(id)
+	rol, errs := uh.userService.Role(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -155,9 +155,9 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps htt
 
 	_, _ = r.Body.Read(body)
 
-	_ = json.Unmarshal(body, &usr)
+	_ = json.Unmarshal(body, &rol)
 
-	usr, errs = uh.userService.UpdateUser(usr)
+	rol, errs = uh.userService.UpdateRole(rol)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -165,7 +165,7 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	output, err := json.MarshalIndent(usr, "", "\t")
+	output, err := json.MarshalIndent(rol, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -178,11 +178,11 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request, ps htt
 	return
 }
 
-//DeleteUser handles DELETE users/:id requests
-func (uh *UserHandler) DeleteUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
+//DeleteRole handles DELETE users/:id requests
+func (uh *RoleHandler) DeleteRole(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 
-	deletedUser, errs := uh.userService.DeleteUser(id)
+	deletedRole, errs := uh.userService.DeleteRole(id)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -190,7 +190,7 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, _ *http.Request, ps htt
 		return
 	}
 
-	output, err := json.MarshalIndent(deletedUser, "", "\t")
+	output, err := json.MarshalIndent(deletedRole, "", "\t")
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
