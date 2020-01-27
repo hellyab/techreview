@@ -3,11 +3,12 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hellyab/techreview/comment"
+	"github.com/hellyab/techreview/entities"
 	"net/http"
 	"strconv"
 
-	"github.com/hellyab/techreview/comment"
-	"github.com/hellyab/techreview/entities"
+
 
 	"github.com/julienschmidt/httprouter"
 )

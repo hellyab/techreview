@@ -7,14 +7,13 @@ import (
 
 //User represents application user and has a string ID (which is still being reconsidered)
 type User struct {
-	ID         string `json:"ID,omitempty"`
+	//ID         string `gorm:"type:varchar; default; replace(uuid_generate_v4() :: text, '-', '')`
 	Username   string
 	FirstName  string
-	MiddleName string
 	LastName   string
 	Email      string
 	Password   string
-	RoleID     uint
+	RoleID     string
 	Interests  json.RawMessage
 }
 
@@ -25,57 +24,73 @@ type User struct {
 
 //Topic represents an area of topic for articles and user's interests. It has a unique string ID and a Name
 type Topic struct {
-	ID   string
+	ID   uint
 	Name string
 }
 
 //Article represents a post by a user. It has a unique ID
 type Article struct {
 	ID              string
-	Author          string
+	AuthorID          string
 	Content         json.RawMessage
 	Topics          json.RawMessage
 	AverageRating   float32
 	NumberOfRatings uint
 	PostedAt        time.Time
-}
+	Review		bool
+	NumberOfComments uint
 
-func (Article) TableName() string {
-	return "article"
 }
 
 //Comment represents comment on article. It has article id and its own unique id.
 type Comment struct {
 	ID         string
-	AuthorName string
+	Writer string
 	Content    string //TODO needs to be looked into
 	ArticleID  string
 	PostedAt   time.Time
+	Likes uint
 }
 
 //Question represents question asked on the platform. It has its own id and contains the inquirer's id
 type Question struct {
-	ID         string `json:"ID"`
-	InquirerID string `gorm:"column:inquirer" json:"InquirerID"`
-	Inquiry    string `json:"Inquiry"`
-}
-
-//TableName changes the name of the table for gorm
-func (Question) TableName() string {
-	return "question"
+	ID         string
+	InquirerId string
+	Inquiry    string
+	AskedAt time.Time
+	Follows uint
+	NumberOfAnswers uint
+	Topics json.RawMessage
 }
 
 //Answer represents answer to a question. It has its own id, question's id and the replier's id
 type Answer struct {
 	ID         string
 	QuestionID string
-	ReplierID  string
+	ReplierId string
 	Answer     string
+	Votes uint
 }
 
-//TableName changes the name of the table for gorm
-func (Answer) TableName() string {
-	return "answer"
+type ArticleRating struct {
+	ArticleID string
+	UserID string
+
+}
+
+type CommentLike struct{
+	ArticleID string
+	UserID string
+}
+
+type AnswerUpvote struct {
+	AnswerID string
+	UserID string
+}
+
+type QuestionFollow struct{
+	QuestionID string
+	UserID string
 }
 
 //Session represents login user session
@@ -88,7 +103,16 @@ type Session struct {
 
 // Role repesents application user roles
 type Role struct {
-	ID    uint
+	ID    string
 	Name  string `gorm:"type:varchar(255)"`
-	Users []User
+}
+
+type AnswersByQuesId struct{
+	Votes int
+	Answer string
+	AskedByUserName string
+	AskedByFirstName string
+	AskedByLastName string
+	AnswerId string
+
 }

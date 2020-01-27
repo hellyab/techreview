@@ -1,8 +1,11 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/hellyab/techreview/answer"
 	"github.com/hellyab/techreview/entities"
+
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -12,7 +15,7 @@ type AnswerGormRepo struct {
 }
 
 //NewAnswerGormRepo returns new object of AnswerGormRepo
-func NewAnswerGormRepo(db *gorm.DB) answer.AnswerRepository {
+func NewAnswerGormRepo(db *gorm.DB) answer.AnswerRepository{
 	return &AnswerGormRepo{conn: db}
 }
 
@@ -73,12 +76,37 @@ func (ansRepo *AnswerGormRepo) StoreAnswer(answer *entities.Answer) (*entities.A
 	return qstn, errs
 }
 
-//QuestionAnswers returns answers for a question
-func (ansRepo *AnswerGormRepo) QuestionAnswers(question *entities.Question, answer *entities.Answer) ([]entities.Answer, []error) {
-	ans := []entities.Answer{}
-	errs := ansRepo.conn.Find(&ans).GetErrors()
+func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entities.AnswersByQuesId, []error){
+	answs := []entities.Answer{}
+	user := entities.User{}
+	ansByQ := entities.AnswersByQuesId{}
+
+	ansByQuestionArray := []entities.AnswersByQuesId{}
+
+	errs := ansRepo.conn.Where("question_id = ?", questionId). Find(&answs).GetErrors()
 	if len(errs) > 0 {
+		fmt.Println("errors fetching answer")
 		return nil, errs
 	}
-	return ans, errs
+
+	for _, ans := range answs{
+		errsForUser := ansRepo.conn.Where("id = ?", ans.ReplierId). First(&user).GetErrors()
+
+		if len(errsForUser) > 0 {
+			fmt.Println("errors fetching the user")
+			return nil, errsForUser
+		}
+
+		ansByQ.AskedByFirstName = user.FirstName
+		ansByQ.AskedByUserName = user.Username
+		ansByQ.Votes = int(ans.Votes)
+		ansByQ.Answer = ans.Answer
+		ansByQ.AnswerId = ans.ID
+
+		ansByQuestionArray = append(ansByQuestionArray, ansByQ)
+	}
+
+
+	return ansByQuestionArray, nil
+
 }

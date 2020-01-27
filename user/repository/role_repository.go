@@ -27,7 +27,7 @@ func (roleRepo *RoleGormRepo) Roles() ([]entities.Role, []error) {
 }
 
 // Role retrieves a role by its id from the database
-func (roleRepo *RoleGormRepo) Role(id uint) (*entities.Role, []error) {
+func (roleRepo *RoleGormRepo) Role(id string) (*entities.Role, []error) {
 	role := entities.Role{}
 	errs := roleRepo.conn.First(&role, id).GetErrors()
 	if len(errs) > 0 {
@@ -57,7 +57,7 @@ func (roleRepo *RoleGormRepo) UpdateRole(role *entities.Role) (*entities.Role, [
 }
 
 // DeleteRole deletes a given user role from the database
-func (roleRepo *RoleGormRepo) DeleteRole(id uint) (*entities.Role, []error) {
+func (roleRepo *RoleGormRepo) DeleteRole(id string) (*entities.Role, []error) {
 	r, errs := roleRepo.Role(id)
 	if len(errs) > 0 {
 		return nil, errs

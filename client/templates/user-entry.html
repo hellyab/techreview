@@ -42,8 +42,7 @@
                             <div class="text-center mb-4">
                                 <p class="lead">Welcome back!</p>
                             </div>
-                            <p class="alert alert-success">Some text success or error</p>
-                            <form role="form" class="form-signin" action="/newuser" method="POST">
+                            <form role="form" class="form-signin" action="/signup" method="POST">
                                 <div class="part-1">
 
                                     <div class="input-group form-label-group mb-2">
@@ -86,16 +85,6 @@
                                         class="subscribe btn btn-primary btn-block rounded-pill shadow-sm"> Register
                                     </button>
                                 </div>
-                                <!-- <div class="part-2 d-none">
-                                    <div class="form-label-group mb-2">
-                                        <input type="text" name="username" placeholder="Interests" class="form-control"
-                                            required>
-                                        <label for="username">Interests</label>
-                                    </div>
-                                    <button type="submit"
-                                        class="subscribe btn btn-primary btn-block rounded-pill shadow-sm"> Register
-                                    </button>
-                                </div> -->
 
                             </form>
                         </div>
@@ -107,16 +96,15 @@
                                 <div class="text-center mb-4">
                                     <p class="lead">Welcome back!</p>
                                 </div>
-                                <p class="alert alert-success">Some text success or error</p>
 
                                 <div class="form-label-group mb-2">
-                                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
+                                    <input type="text" id="inputUsername" class="form-control" placeholder="Username" name="loginUsername"
                                         required autofocus>
-                                    <label for="inputEmail">Email address</label>
+                                    <label for="inputEmail">Username</label>
                                 </div>
 
                                 <div class="form-label-group mb-2">
-                                    <input type="password" id="inputPassword" class="form-control"
+                                    <input type="password" id="inputPassword" class="form-control" name="loginPassword"
                                         placeholder="Password" required>
                                     <label for="inputPassword">Password</label>
                                 </div>
@@ -126,7 +114,7 @@
                                         <input type="checkbox" value="remember-me"> Remember me
                                     </label>
                                 </div>
-                                <button type="button"
+                                <button type="submit"
                                     class="subscribe btn btn-primary btn-block rounded-pill shadow-sm"> Sign in
                                 </button>
                             </form>
