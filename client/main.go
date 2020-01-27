@@ -1,11 +1,11 @@
 package main
 
 import (
-
 	"bytes"
 	"fmt"
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/rtoken"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"html/template"
@@ -28,7 +28,7 @@ import (
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func createTables(dbconn *gorm.DB) []error {
-	errs := dbconn.CreateTable(&entities.User{}, &entities.Role{}, &entities.Session{}).GetErrors()
+	errs := dbconn.CreateTable(&entities.Session{}, &entities.Role{}).GetErrors()
 	if errs != nil {
 		return errs
 	}
@@ -38,10 +38,12 @@ func createTables(dbconn *gorm.DB) []error {
 func main() {
 	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
 
-	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tech_review_test?sslmode=disable") //TODO handle errors later
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:Binaman1!@localhost/techreview?sslmode=disable") //TODO handle errors later
 	if err != nil {
 		fmt.Printf("Error %s", err)
 	}
+
+	createTables(dbconn)
 	//errs := createTables(dbconn)
 	//if len(errs)>0{
 	//	fmt.Println(errs)
@@ -62,14 +64,15 @@ func main() {
 	sess := configSess()
 	uh := handler.NewUserHandler(templates, userServ, sessionSrv, roleServ, sess, csrfSignKey)
 
-	mux.HandleFunc("/questions", allQuestions)
+	mux.Handle("/questions", uh.Authenticated(http.HandlerFunc(allQuestions)))
 	mux.HandleFunc("/userentry", uh.Signup)
-	mux.HandleFunc("/newuser", uh.Signup)
+	mux.HandleFunc("/signup", uh.Signup)
+	mux.HandleFunc("/login", uh.Login)
 	mux.HandleFunc("/upload", uploadHandler)
 	mux.HandleFunc("/article", articleHandler)
+	mux.Handle("/logout", uh.Authenticated(http.HandlerFunc(uh.Logout)))
 
-
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe("localhost:8080", mux)
 
 }
 
@@ -190,7 +193,7 @@ func articleHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func configSess() *entities.Session {
-	tokenExpires := time.Now().Add(time.Minute * 30).Unix()
+	tokenExpires := time.Now().Add(time.Minute * 1).Unix()
 	sessionID := rtoken.GenerateRandomID(32)
 	signingString, err := rtoken.GenerateRandomString(32)
 	if err != nil {

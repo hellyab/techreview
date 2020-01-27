@@ -8,7 +8,7 @@ import (
 type UserService interface {
 	Users() ([]entities.User, []error)
 	User(id string) (*entities.User, []error)
-	UserByEmail(email string) (*entities.User, []error)
+	UserByUsername(username string) (*entities.User, []error)
 	UpdateUser(user *entities.User) (*entities.User, []error)
 	DeleteUser(id string) (*entities.User, []error)
 	StoreUser(user *entities.User) (*entities.User, []error)
@@ -20,10 +20,10 @@ type UserService interface {
 // RoleService speifies application user role related services
 type RoleService interface {
 	Roles() ([]entities.Role, []error)
-	Role(id uint) (*entities.Role, []error)
+	Role(id string) (*entities.Role, []error)
 	RoleByName(name string) (*entities.Role, []error)
 	UpdateRole(role *entities.Role) (*entities.Role, []error)
-	DeleteRole(id uint) (*entities.Role, []error)
+	DeleteRole(id string) (*entities.Role, []error)
 	StoreRole(role *entities.Role) (*entities.Role, []error)
 }
 
