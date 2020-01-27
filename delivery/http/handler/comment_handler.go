@@ -12,14 +12,17 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+//CommentHandler ...
 type CommentHandler struct {
 	commentService comment.CommentService
 }
 
+//NewCommentHandler ...
 func NewCommentHandler(cmtService comment.CommentService) *CommentHandler {
 	return &CommentHandler{commentService: cmtService}
 }
 
+//GetComments ...
 func (ch *CommentHandler) GetComments(w http.ResponseWriter,
 	r *http.Request, _ httprouter.Params) {
 
@@ -45,6 +48,7 @@ func (ch *CommentHandler) GetComments(w http.ResponseWriter,
 	return
 }
 
+//GetComment ...
 func (ch *CommentHandler) GetComment(w http.ResponseWriter,
 	r *http.Request, ps httprouter.Params) {
 
@@ -80,6 +84,7 @@ func (ch *CommentHandler) GetComment(w http.ResponseWriter,
 
 }
 
+//UpdateComment ...
 func (ch *CommentHandler) UpdateComment(w http.ResponseWriter,
 	r *http.Request, _ httprouter.Params) {
 	l := r.ContentLength
@@ -107,12 +112,13 @@ func (ch *CommentHandler) UpdateComment(w http.ResponseWriter,
 		return
 	}
 
-	p := fmt.Sprintf("/tech/comments/update/%d", comment.ID)
+	p := fmt.Sprintf("/tech/comments/update/%s", comment.ID)
 	w.Header().Set("Location", p)
 	w.WriteHeader(http.StatusCreated)
 	return
 }
 
+//DeleteComment ...
 func (ch *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	id, err := strconv.Atoi(ps.ByName("id"))
@@ -135,6 +141,8 @@ func (ch *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request, 
 	w.WriteHeader(http.StatusNoContent)
 	return
 }
+
+//PutComment ...
 func (ch *CommentHandler) PutComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	id, err := strconv.Atoi(ps.ByName("id"))
