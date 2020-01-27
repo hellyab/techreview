@@ -1,12 +1,29 @@
-document.addEventListener("DOMContentLoaded", event => {
-  event.preventDefault();
-  $("#question-card").toggle();
-});
+// document.addEventListener("DOMContentLoaded", event => {
+//   event.preventDefault();
+//   $("#question-card").toggle();
+// });
+//
+// function toggleQuestion() {
+//   $("#question-card").toggle();
+//   $("#ask-btn").toggle();
+// }
+//
+// $(document).ready(function() {
+//   // executes when HTML-Document is loaded and DOM is ready
+//   console.log("document is ready");
+//
+//
+//   $( ".card" ).hover(
+//       function() {
+//         $(this).addClass('shadow-lg').css('cursor', 'pointer');
+//       }, function() {
+//         $(this).removeClass('shadow-lg');
+//       }
+//   );
+//
+// // document ready
+// });
 
-function toggleQuestion() {
-  $("#question-card").toggle();
-  $("#ask-btn").toggle();
-}
 
 function submitQuestion() {
   var inquiry = document.getElementById("inquiry");

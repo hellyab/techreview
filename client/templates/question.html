@@ -6,86 +6,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    </link>
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    </link>
     <link rel="stylesheet" href="assets/css/question.css">
-    </link>
-    <script src="assets/js/question.js"></script>
     <title>Page Title</title>
 </head>
 
-<body>
-    {{template "navbar"}}
+<body class="bg-light">
+{{template "navbar"}}
 
-    <div id="page-container" class="container">
-        {{range . }}
-        <div class="card bg-light w-75 mx-auto my-2 shadow-sm question-card" >
+<div id="page-container" class="container mt-5 pt-3">
+
+    {{range . }}
+        <div class="card bg-white w-75 mr-auto my-2 shadow-m question-card border-none shadow-sm" id="card">
             <div class="card-body">
-               
+
                 <div class="ml-auto close" name ={{.ID}} onclick="deleteQuestion(event,this)">
                     <i class="material-icons">
                         delete
                     </i>
                 </div>
-                
+
                 <h5 class="card-title">{{.InquirerID}}</h5>
                 <p class="card-text">{{.Inquiry}}</p>
                 <a href="#" class="btn btn-primary">Answer</a>
-                
+
             </div>
         </div>
-        {{else}}
+    {{else}}
         <h1>Can't reach the server now</h1>
-        {{end}}
+    {{end}}
 
-        <button class="btn btn-dark rounded-circle" id="ask-btn" onclick="toggleQuestion()">
-            <i class="material-icons">
-                contact_support
-            </i>
-        </button>
+    <button class="btn btn-dark rounded-circle" id="ask-btn" onclick="toggleQuestion()">
+        <i class="material-icons">
+            contact_support
+        </i>
+    </button>
 
-        <div class="bg-dark rounded-lg shadow-sm col-5 p-5" id="question-card">
-            <!-- Credit card form content -->
-            <div class="tab-content">
+    <div class="bg-dark rounded-lg shadow-sm col-5 p-5" id="question-card">
+        <!-- Credit card form content -->
+        <div class="tab-content">
 
-                <!-- credit card info-->
-                <div id="nav-tab-card" class="tab-pane fade show active">
-                    <form role="form">
+            <!-- credit card info-->
+            <div id="nav-tab-card" class="tab-pane fade show active">
+                <form role="form">
                         <textarea name="Inquiry" id="inquiry" class="form-control btn-block d-inline-flex my-text-input"
-                            rows="5">
+                                  rows="5">
                                 </textarea>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-light mx-2 rounded-pill shadow-sm"
+                    <div class="btn-group btn-block">
+                        <button type="button" class="btn btn-light mx-2 rounded-pill shadow-sm"
                                 onclick="submitQuestion()"> Submit
-                            </button>
-                            <button type="button" class="btn btn-light mx-2 rounded-pill shadow-sm"
+                        </button>
+                        <button type="button" class="btn btn-light mx-2 rounded-pill shadow-sm"
                                 onclick="toggleQuestion()"> Cancel
-                            </button>
+                        </button>
 
-                        </div>
-                    </form>
-                </div>
-                <!-- End -->
+                    </div>
+                </form>
             </div>
             <!-- End -->
-
-
         </div>
+        <!-- End -->
+
+
     </div>
+</div>
+<style>
+    .card:hover{
+        box-shadow: 0 0 11px rgba(33,33,33,.2) !important;
+    }
 
+    #page-container {
+        position: relative;
+        min-height: 100vh;
+    }
 
-    {{template "footer"}}
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    footer {
+        width: 100%;
+    }
+
+    #card{
+        border:0.5px!important;
+    }
+
+    #content-wrap {
+        padding-bottom: 5rem;
+    }
+
+    .my-text-input {
+        resize: none;
+    }
+
+    #ask-btn{
+        position: fixed;
+        bottom: 10%;
+        right: 2.5%;
+        padding: 5px 0 0 0!important;
+        text-align: center;
+        height: 50px;
+        width: 50px;
+    }
+
+    #question-card{
+        position: fixed;
+        /* z-index: 10; */
+        bottom: 10%;
+        /*border: 0px !important;*/
+        right: 2.5%;
+    }
+</style>
+
+{{template "footer"}}
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src="assets/js/question.js"></script>
 
 </body>
 <style>
