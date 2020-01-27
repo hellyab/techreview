@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 package main
 
 import (
@@ -18,12 +22,15 @@ import (
 
 	commRepo "github.com/hellyab/techreview/comment/repository"
 	commServ "github.com/hellyab/techreview/comment/service"
+<<<<<<< HEAD
 
 	usRepo "github.com/hellyab/techreview/user/repository"
 	usServ "github.com/hellyab/techreview/user/service"
 
 	artRepo "github.com/hellyab/techreview/article/repository"
 	artServ "github.com/hellyab/techreview/article/service"
+=======
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 )
 
 //roleRepo
@@ -31,7 +38,11 @@ import (
 //some role handler
 
 func main() {
+<<<<<<< HEAD
 	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/techreview?sslmode=disable")
+=======
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tech_review_test?sslmode=disable")
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 
 	if err != nil {
 		panic(err)
@@ -51,6 +62,7 @@ func main() {
 	commentSrv := commServ.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentSrv)
 
+<<<<<<< HEAD
 	articleRepo := artRepo.NewArticleGormRepo(dbconn)
 	articleSrv := artServ.NewArticleService(articleRepo)
 	articleHandler := handler.NewArticleHandler(articleSrv)
@@ -67,22 +79,33 @@ func main() {
 	sessServ := usServ.NewSessionService(sessRepo)
 	sessHandler := handler.NewSessionHandler(sessServ)
 
+=======
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 	router := httprouter.New()
 
 	router.GET("/questions", questionHandler.GetQuestions)
 	router.GET("/questions/:id", questionHandler.GetQuestion)
+<<<<<<< HEAD
 	router.POST("/questions", questionHandler.PostQuestion)
+=======
+	router.POST("/question", questionHandler.PostQuestion)
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 	router.PUT("/questions/:id", questionHandler.PutQuestion)
 	router.DELETE("/questions/:id", questionHandler.DeleteQuestion)
 
 	router.GET("/answers", answerHandler.GetAnswers)
 	router.GET("/answers/:id", answerHandler.GetAnswer)
+<<<<<<< HEAD
 	router.POST("/answers", answerHandler.PostAnswer)
+=======
+	router.POST("/answer", answerHandler.PostAnswer)
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
 
 	router.GET("/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
+<<<<<<< HEAD
 	router.POST("/comments", commentHandler.UpdateComment)
 	router.DELETE("/comments/:id", commentHandler.DeleteComment)
 	router.PUT("/comments/:id", commentHandler.PutComment)
@@ -112,11 +135,24 @@ func main() {
 	router.DELETE("/sessions/:id", sessHandler.DeleteSession)
 
 
+=======
+	router.POST("/comment", commentHandler.UpdateComment)
+	router.DELETE("/comments/:id", commentHandler.DeleteComment)
+	router.PUT("/comments/:id", commentHandler.PutComment)
+
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
 	apiHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
 	}).Handler(router)
 
+<<<<<<< HEAD
 	http.ListenAndServe("localhost:8181", apiHandler)
 
 }
+=======
+	http.ListenAndServe(":8181", apiHandler)
+
+}
+
+>>>>>>> fbe394209bc600b01af6f1f873d27d6f2c253b44
