@@ -3,11 +3,18 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+	"net/http"
+
+	"github.com/hellyab/techreview/entities"
+	"github.com/hellyab/techreview/user"
+=======
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/user"
 	"net/http"
 
 
+>>>>>>> remotes/origin/master
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -202,6 +209,11 @@ func (uh *RoleHandler) DeleteRole(w http.ResponseWriter, _ *http.Request, ps htt
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 	return
+<<<<<<< HEAD
+
+}
+=======
 }
 
 
+>>>>>>> remotes/origin/master

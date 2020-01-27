@@ -1,29 +1,61 @@
 {{define "navbar"}}
+    <nav class="navbar navbar-expand-md navbar-light shadow-sm sticky-top" id="theWholeNavbar">
+        <!-- One of the primary actions on mobile is to call a business - This displays a phone button on mobile only -->
+        <div class="navbar-toggler-left my-1 question">
+            <button class="mx-1 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+                    aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="d-lg-none d-md-none d-sm-inline d-inline lead text-dark text-center">TECH REVIEW</a>
+        </div>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">TechReview</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <div class="collapse navbar-collapse flex-column " id="navbar">
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Home </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Articles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Questions Forum</a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0" action = "/logout" method="post">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
+            <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
+                <a href="#"
+                   class="text-dark success nav-link lead flex-grow-1 d-lg-inline d-md-inline d-sm-none d-none">TECH
+                    REVIEW </a>
 
+
+
+                <div class="flex-row">
+                    <form class="form-inline d-inline mr-2" action="/logout" method="post">
+                        <input class="form-control btn-sm mr-sm-2 lead" type="search" placeholder="Search"
+                               aria-label="Search">
+                        <button class="btn btn-sm btn-outline-success lead my-2" type="submit">Search</button>
+                    </form>
+                    <li class="nav-item ml-3 mb-auto d-inline">
+                        <a class="nav-link entry-nav d-inline" href="#">
+
+                            <button class="btn btn-sm btn-outline-success lead d-inline" type="button">Login</button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item mr-2 d-inline-block">
+
+                        <a class="nav-link entry-nav" href="#">
+                            <button class="btn btn-sm btn-outline-accent lead" type="button">Register</button>
+                        </a>
+
+                    </li>
+
+                </div>
+
+            </ul>
+
+            <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
+                <nav class="nav justify-content-center">
+                    <a class="text-dark mx-1 nav-link lead" href="#"> Home</a>
+                    <a class="text-dark mx-1 nav-link lead" href="#">Articles</a>
+                    <a class="text-dark mx-1 nav-link lead" href="#">Reviews</a>
+                    <a class="text-dark mx-1 nav-link lead" href="#">Q & A Forum</a>
+                </nav>
+            </ul>
+
+
+        </div>
+
+    </nav>
+    <script src="assets/js/navbar.js"></script>
+    <!--Navbar ends here-->
 {{end}}

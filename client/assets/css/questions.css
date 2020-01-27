@@ -1,0 +1,21 @@
+a:hover{
+    text-decoration: none;
+    color: green!important;
+}
+
+a{
+    color: #900C3F!important;
+}
+
+.question-card:hover{
+    box-shadow: 0 0 11px rgba(33,33,33,.125) !important;
+    
+}
+
+.fixed-question{
+    position: fixed;
+}
+
+
+
+

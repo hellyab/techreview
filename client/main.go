@@ -28,7 +28,7 @@ import (
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func createTables(dbconn *gorm.DB) []error {
-	errs := dbconn.CreateTable(&entities.Session{}, &entities.Role{}).GetErrors()
+
 	if errs != nil {
 		return errs
 	}
@@ -38,12 +38,6 @@ func createTables(dbconn *gorm.DB) []error {
 func main() {
 	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
 
-	dbconn, err := gorm.Open("postgres", "postgres://postgres:Binaman1!@localhost/techreview?sslmode=disable") //TODO handle errors later
-	if err != nil {
-		fmt.Printf("Error %s", err)
-	}
-
-	createTables(dbconn)
 	//errs := createTables(dbconn)
 	//if len(errs)>0{
 	//	fmt.Println(errs)
@@ -86,7 +80,8 @@ func allQuestions(w http.ResponseWriter, _ *http.Request) {
 		//tmpl.ExecuteTemplate(w, "error.layout", nil)
 	}
 
-	templates.ExecuteTemplate(w, "question.html", Questions)
+	templates.ExecuteTemplate(w, "questions.html", Questions)
+
 
 }
 

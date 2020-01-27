@@ -27,19 +27,21 @@ func (userRepo *UserGormRepo) Users() ([]entities.User, []error) {
 }
 
 // User retrieves a user by its id from the database
-func (userRepo *UserGormRepo) User(id uint) (*entities.User, []error) {
-	user := entities.User{}
-	errs := userRepo.conn.First(&user, id).GetErrors()
+func (userRepo *UserGormRepo) User(id string) (*entities.User, []error) {
+	usr := entities.User{}
+	errs := userRepo.conn.Find(&usr, "id=?", id).GetErrors()
+
+	// errs := userRepo.conn.First(&user, id).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return &user, errs
+	return &usr, errs
 }
 
 // UserByEmail retrieves a user by its email address from the database
-func (userRepo *UserGormRepo) UserByEmail(email string) (*entities.User, []error) {
+func (userRepo *UserGormRepo) UserByUsername(username string) (*entities.User, []error) {
 	user := entities.User{}
-	errs := userRepo.conn.Find(&user, "email=?", email).GetErrors()
+	errs := userRepo.conn.Find(&user, "username=?", username).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -57,12 +59,12 @@ func (userRepo *UserGormRepo) UpdateUser(user *entities.User) (*entities.User, [
 }
 
 // DeleteUser deletes a given user from the database
-func (userRepo *UserGormRepo) DeleteUser(id uint) (*entities.User, []error) {
+func (userRepo *UserGormRepo) DeleteUser(id string) (*entities.User, []error) {
 	usr, errs := userRepo.User(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	errs = userRepo.conn.Delete(usr, id).GetErrors()
+	errs = userRepo.conn.Delete(usr).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -72,6 +74,7 @@ func (userRepo *UserGormRepo) DeleteUser(id uint) (*entities.User, []error) {
 // StoreUser stores a new user into the database
 func (userRepo *UserGormRepo) StoreUser(user *entities.User) (*entities.User, []error) {
 	usr := user
+	// errs := userRepo.conn.Exec("INSERT INTO person(username, first_name, middle_name, last_name, password, email, interests) VALUES (?,?,?,?,?,?,?)", user.Username, user.FirstName, user.MiddleName, user.LastName, user.Password, user.Email, string(user.Interests)).GetErrors()
 	errs := userRepo.conn.Create(usr).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
@@ -79,15 +82,15 @@ func (userRepo *UserGormRepo) StoreUser(user *entities.User) (*entities.User, []
 	return usr, errs
 }
 
-// PhoneExists check if a given phone number is found
-func (userRepo *UserGormRepo) PhoneExists(phone string) bool {
-	user := entities.User{}
-	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
-	if len(errs) > 0 {
-		return false
-	}
-	return true
-}
+// // PhoneExists check if a given phone number is found
+// func (userRepo *UserGormRepo) PhoneExists(phone string) bool {
+// 	user := entities.User{}
+// 	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
+// 	if len(errs) > 0 {
+// 		return false
+// 	}
+// 	return true
+// }
 
 // EmailExists check if a given email is found
 func (userRepo *UserGormRepo) EmailExists(email string) bool {
