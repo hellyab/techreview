@@ -1,3 +1,4 @@
+
 package comment
 
 import (
@@ -11,3 +12,4 @@ type CommentRepository interface {
 	DeleteComment(id uint) (*entities.Comment, []error)
 	StoreComment(comment *entities.Comment) (*entities.Comment, []error)
 }
+
