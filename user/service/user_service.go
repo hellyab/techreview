@@ -25,7 +25,7 @@ func (us *UserService) Users() ([]entities.User, []error) {
 }
 
 // User retrieves an application user by its id
-func (us *UserService) User(id uint) (*entities.User, []error) {
+func (us *UserService) User(id string) (*entities.User, []error) {
 	usr, errs := us.userRepo.User(id)
 	if len(errs) > 0 {
 		return nil, errs
@@ -34,8 +34,8 @@ func (us *UserService) User(id uint) (*entities.User, []error) {
 }
 
 // UserByEmail retrieves an application user by its email address
-func (us *UserService) UserByEmail(email string) (*entities.User, []error) {
-	usr, errs := us.userRepo.UserByEmail(email)
+func (us *UserService) UserByUsername(username string) (*entities.User, []error) {
+	usr, errs := us.userRepo.UserByUsername(username)
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -52,7 +52,7 @@ func (us *UserService) UpdateUser(user *entities.User) (*entities.User, []error)
 }
 
 // DeleteUser deletes a given application user
-func (us *UserService) DeleteUser(id uint) (*entities.User, []error) {
+func (us *UserService) DeleteUser(id string) (*entities.User, []error) {
 	usr, errs := us.userRepo.DeleteUser(id)
 	if len(errs) > 0 {
 		return nil, errs
@@ -69,11 +69,11 @@ func (us *UserService) StoreUser(user *entities.User) (*entities.User, []error) 
 	return usr, errs
 }
 
-// PhoneExists check if there is a user with a given phone number
-func (us *UserService) PhoneExists(phone string) bool {
-	exists := us.userRepo.PhoneExists(phone)
-	return exists
-}
+// // PhoneExists check if there is a user with a given phone number
+// func (us *UserService) PhoneExists(phone string) bool {
+// 	exists := us.userRepo.PhoneExists(phone)
+// 	return exists
+// }
 
 // EmailExists checks if there exist a user with a given email address
 func (us *UserService) EmailExists(email string) bool {

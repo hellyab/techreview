@@ -13,4 +13,6 @@ type AnswerService interface {
 	DeleteAnswer(id string) (*entities.Answer, []error)
 	StoreAnswer(answer *entities.Answer) (*entities.Answer, []error)
 	AnswersByQuestionId(questionId string)([]entities.AnswersByQuesId, []error)
+	UpVoteAnswer(answerUpvote *entities.AnswerUpvote)
+	UpVoteCount(answerId string) int
 }

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/hellyab/techreview/answer"
 	"github.com/hellyab/techreview/entities"
 	"net/http"
@@ -191,6 +192,47 @@ func (ah *AnswerHandler) GetAnswersByQuestionId(w http.ResponseWriter, _ *http.R
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+}
+
+
+func (ah *AnswerHandler) UpVoteAnswer(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+
+	l := r.ContentLength
+	body := make([]byte, l)
+	r.Body.Read(body)
+	answerUpvote := &entities.AnswerUpvote{}
+
+	err := json.Unmarshal(body, answerUpvote)
+	fmt.Println("successfully read the body and assinged to the answerupvote struct")
+	if err != nil {
+		fmt.Println("error while unmarshing the answerUpvote")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	ah.answerService.UpVoteAnswer(answerUpvote)
+	fmt.Println("success form upvoteanswer handler")
+	return
+}
+
+func (ah *AnswerHandler) UpVoteCount(w http.ResponseWriter, _ *http.Request, params httprouter.Params){
+	ansId := params.ByName("ansId")
+
+	upvotes := ah.answerService.UpVoteCount(ansId)
+
+	output, err := json.MarshalIndent(upvotes, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marshaling")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 

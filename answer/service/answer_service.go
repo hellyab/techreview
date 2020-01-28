@@ -70,3 +70,10 @@ func (as *AnswerService) AnswersByQuestionId(questionId string) ([]entities.Answ
 }
 
 
+func (as *AnswerService) UpVoteAnswer(answerUpvote *entities.AnswerUpvote){
+	as.answerRepo.UpVoteAnswer(answerUpvote)
+}
+
+func (as *AnswerService) UpVoteCount(answerId string) int {
+	return as.answerRepo.UpVoteCount(answerId)
+}

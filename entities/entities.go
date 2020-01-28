@@ -114,5 +114,4 @@ type AnswersByQuesId struct{
 	AnsweredByFirstName string
 	AnsweredByLastName string
 	AnswerId string
-
 }

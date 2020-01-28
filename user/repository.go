@@ -12,7 +12,6 @@ type UserRepository interface {
 	UpdateUser(user *entities.User) (*entities.User, []error)
 	DeleteUser(id string) (*entities.User, []error)
 	StoreUser(user *entities.User) (*entities.User, []error)
-	// PhoneExists(phone string) bool
 	EmailExists(email string) bool
 	UserRoles(*entities.User) ([]entities.Role, []error)
 }

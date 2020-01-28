@@ -84,6 +84,8 @@ func main() {
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
 	router.GET("/answersbyquestion/:questionId", answerHandler.GetAnswersByQuestionId)
+	router.POST("/answers/upvote",answerHandler.UpVoteAnswer)
+	router.GET("/upvotes/:ansId", answerHandler.UpVoteCount)
 
 	router.GET("/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
