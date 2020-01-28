@@ -31,7 +31,9 @@ import (
 //some role handler
 
 func main() {
+
 	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/techreview?sslmode=disable")
+
 
 	if err != nil {
 		panic(err)
@@ -83,9 +85,13 @@ func main() {
 	router.POST("/answers", answerHandler.PostAnswer)
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
+
+  router.POST("/answers/upvote",answerHandler.UpVoteAnswer)
+	router.GET("/upvotes/:ansId", answerHandler.UpVoteCount)
 	router.GET("/answers/byquestion/:questionId", answerHandler.GetAnswersByQuestionId)
 
-	router.GET("/comments", commentHandler.GetComments)
+
+	router.GET(	"/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
 	router.POST("/comments", commentHandler.UpdateComment)
 	router.DELETE("/comments/:id", commentHandler.DeleteComment)
@@ -96,6 +102,11 @@ func main() {
 	router.POST("/articles", articleHandler.PostArticle)
 	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
+
+  router.POST("/articles/ratings", articleHandler.RateArticle)
+	router.POST("/ratings/:artId",articleHandler.ArticleRateCount)
+	router.GET("/search/:searchKey", articleHandler.SearchArticle)
+  
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/id=:id", userHandler.GetUser)
@@ -122,5 +133,6 @@ func main() {
 	}).Handler(router)
 
 	http.ListenAndServe("localhost:8181", apiHandler)
+
 
 }

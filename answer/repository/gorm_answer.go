@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/hellyab/techreview/answer"
 	"github.com/hellyab/techreview/entities"
-
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -111,3 +109,45 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 	return ansByQuestionArray, nil
 
 }
+
+func (ansRepo *AnswerGormRepo) UpVoteAnswer(answerUpvote *entities.AnswerUpvote) {
+
+	errs := ansRepo.conn.Where("answer_id = ? AND user_id= ?", answerUpvote.AnswerID, answerUpvote.UserID).First(&answerUpvote).GetErrors()
+	//fmt.Println("the found answerUpvote form", ansUpvote)
+	if len(errs) > 0 {
+
+		errs := ansRepo.conn.Create(answerUpvote).GetErrors()
+		if len(errs) > 0 {
+			fmt.Println("error storing the answer upvote")
+			return
+		}
+		fmt.Println("stored  answer upvote")
+		fmt.Println("query worked")
+		return
+
+	} else{
+		errs := ansRepo.conn.Delete(answerUpvote).GetErrors()
+		if len(errs) > 0 {
+			fmt.Println("error while deleting answer upvote", errs)
+			return
+		}
+		fmt.Println("deleted answer upvote succuessfully")
+		return
+	}
+}
+
+func (ansRepo *AnswerGormRepo) UpVoteCount(answerId string) int {
+	var count int
+	var questionFollows entities.AnswerUpvote
+	//questionFollows := entities.QuestionFollow{}
+	ansRepo.conn.Model(&questionFollows).Where("answer_id = ?", answerId).Count(&count)
+	// update the count value in answers table also
+	ansRepo.conn.Model(&entities.Answer{}).Where("id = ?", answerId).UpdateColumn("votes", count)
+
+	fmt.Println("counted succesfully, with value: ", count)
+
+	return count
+}
+
+
+

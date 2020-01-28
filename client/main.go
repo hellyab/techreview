@@ -23,6 +23,8 @@ import (
 
 	usrRep "github.com/hellyab/techreview/user/repository"
 	usrSrv "github.com/hellyab/techreview/user/service"
+
+
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
@@ -33,6 +35,7 @@ func createTables(dbconn *gorm.DB) []error {
 	}
 	return nil
 }
+
 
 
 func main() {
@@ -49,6 +52,7 @@ func main() {
 	if len(errs)>0{
 		fmt.Println(errs)
 	}
+
 	sessionRepo := usrRep.NewSessionGormRepo(dbconn)
 	sessionSrv := usrSrv.NewSessionService(sessionRepo)
 
@@ -79,24 +83,40 @@ func main() {
 	mux.HandleFunc("/article", articleHandler)
 	mux.Handle("/logout", uh.Authenticated(http.HandlerFunc(uh.Logout)))
 
+
+
+	time.AfterFunc(15*time.Minute, func() {
+
+
+		sessionSrv.DeleteSession(sess.UUID)
+
+		fmt.Println("called after a minute")
+
+	})
+
+
+
 	http.ListenAndServe("localhost:8080", mux)
 
 }
 
-//func allQuestions(w http.ResponseWriter, _ *http.Request) {
-//	Questions, err := handler.FetchQuestions()
-//
-//	if err != nil {
-//		w.WriteHeader(http.StatusNoContent)
-//		fmt.Println("Error Occured")
-//		//TODO Add error layout
-//		//tmpl.ExecuteTemplate(w, "error.layout", nil)
-//	}
-//
-//	templates.ExecuteTemplate(w, "questions.html", Questions)
-//
-//
-//}
+
+func allQuestions(w http.ResponseWriter, _ *http.Request) {
+	Questions, err := handler.FetchQuestions()
+
+	if err != nil {
+		w.WriteHeader(http.StatusNoContent)
+		fmt.Println("Error Occured")
+		//TODO Add error layout
+		//tmpl.ExecuteTemplate(w, "error.layout", nil)
+	}
+
+	templates.ExecuteTemplate(w, "questions.html", Questions)
+
+
+
+}
+
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	dest := "http://localhost:8181/user/"

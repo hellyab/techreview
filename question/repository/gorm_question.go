@@ -88,7 +88,7 @@ func (qstnRepo *QuestionGormRepo) FollowQuestion(questionFollow entities.Questio
 			fmt.Println("error storing the quesition follow")
 			return false
 		}
-		fmt.Println("stored the question")
+		fmt.Println("stored the question follow")
 		fmt.Println("query worked")
 		return true
 
@@ -97,8 +97,10 @@ func (qstnRepo *QuestionGormRepo) FollowQuestion(questionFollow entities.Questio
 		if len(errs) > 0 {
 			fmt.Println("error while deleting question follow", errs)
 		}
+
 		fmt.Println("deleted succuessfully")
 		return false
+
 	}
 }
 
@@ -121,10 +123,8 @@ func (qstnRepo *QuestionGormRepo) FollowCount(questionId string) int{
 	var questionFollows entities.QuestionFollow
 	//questionFollows := entities.QuestionFollow{}
 	qstnRepo.conn.Model(&questionFollows).Where("question_id = ?", questionId).Count(&count)
-
-
-	//Where("question_id = ?", questionId).Find(&questionFollow).Count(&followCnt)
-
+	// update the count value in questions table also
+	qstnRepo.conn.Model(&entities.Question{}).Where("id = ?", questionId).UpdateColumn("follows", count)
 
 	fmt.Println("counted succesfully, with value: ", count)
 
