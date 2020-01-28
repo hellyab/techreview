@@ -3,11 +3,18 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+	"net/http"
+
+	"github.com/hellyab/techreview/entities"
+	"github.com/hellyab/techreview/user"
+=======
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/user"
 	"net/http"
 
 
+>>>>>>> remotes/origin/master
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -48,7 +55,10 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, _ *http.Request, ps httpro
 	id := ps.ByName("id")
 
 	usr, errs := uh.userService.User(id)
+<<<<<<< HEAD
+=======
 	usr.Password = ""	// don expose password
+>>>>>>> remotes/origin/master
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")

@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"github.com/hellyab/techreview/entities"
-	"github.com/hellyab/techreview/user"
-	"github.com/jinzhu/gorm"
+"github.com/hellyab/techreview/entities"
+"github.com/hellyab/techreview/user"
+"github.com/jinzhu/gorm"
 )
 
 // RoleGormRepo implements the menu.RoleRepository interface

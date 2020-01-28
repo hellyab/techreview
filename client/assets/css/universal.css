@@ -1,0 +1,30 @@
+.btn-group-xs > .btn, .btn-xs {
+    padding: .25rem .4rem!important;
+    font-size: .875rem!important;
+    line-height: .5!important;
+  }
+
+.bg-accent{
+    background-color: #900C3F!important;
+}
+
+.text-accent{
+    color: #900C3F!important;
+}
+
+.btn-accent{
+    color: white!important;
+    background-color: #8A5CB8!important;
+    border-color: #8A5CB8!important;
+}
+
+.btn-outline-accent{
+    color: #900C3F;
+    border-color: #900C3F;
+}
+
+.btn-outline-accent:hover{
+    color: #fff;
+    background-color: #900C3F;
+    border-color: #900C3F;
+}
