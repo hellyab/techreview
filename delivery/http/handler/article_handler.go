@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"github.com/hellyab/techreview/article"
 	"github.com/hellyab/techreview/entities"
+	usRepo "github.com/hellyab/techreview/user/repository"
+	usServ "github.com/hellyab/techreview/user/service"
+	"github.com/jinzhu/gorm"
 	"net/http"
 
-
+	"net/smtp"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -76,6 +79,17 @@ func (ah *ArticleHandler) GetArticle(w http.ResponseWriter,
 	return
 }
 
+type smtpServer struct {
+	host string
+	port string
+}
+
+
+func (s *smtpServer) seEndEmail()string{
+	return s.host + ":" + s.port
+}
+
+
 
 //PostArticle handles post methods on articles
 func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -96,8 +110,59 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 	}
 
 	// if not err
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:Binaman1!@localhost/techreview?sslmode=disable")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer dbconn.Close()
 
 	art, errs := ah.articleService.PostArticle(art) // pass the unmashaled strucl to service and return the article / errs
+
+	userRepo := usRepo.NewUserGormRepo(dbconn)
+	userSrv := usServ.NewUserService(userRepo)
+
+	users, errs := userSrv.Users()
+	postedBy, errUser := userSrv.User(art.AuthorID)
+
+	if errUser != nil{
+		fmt.Println("error fetching user", errUser)
+	}
+	fmt.Println("user posed by", postedBy)
+	if errs != nil{
+		fmt.Println("error while get it user in post article handler")
+	}
+
+	//
+	from := "binuseifu@gmail.com"
+	password := "Ironmansucks1!"
+
+	// Receiver email address.
+	to := []string{}
+	for _, user := range users{
+		if	user.Email != postedBy.Email {to = append(to, user.Email)}
+	}
+
+
+
+	// smtp server configuration.
+	smtpServer := smtpServer{host: "smtp.gmail.com", port: "587"}
+	// Message.
+	message := []byte(postedBy.FirstName + " " + postedBy.LastName + ": Posted an article go check it out")
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpServer.host)
+	// Sending email.
+	err2 := smtp.SendMail(smtpServer.seEndEmail(), auth, from, to, message)
+	if err2 != nil {
+		fmt.Println(err)
+		fmt.Println("error while sending email", err2)
+		return
+	}
+	fmt.Println("Email Sent!")
+
+	//
+
 
 	// check of errs
 	if len(errs) > 0 {
@@ -107,21 +172,12 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 		return
 	}
 
-	// if not errs
-// set up url                    // change url location to /tech/aricles/id
-//	art, errs = ah.articleService.GetArticle(art.ID)
-//
-//	if len(errs) > 0 {
-//		w.Header().Set("Content-Type", "application/json")
-//		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-//		return
-//	}
-
 	output, err := json.MarshalIndent(art, "", "\t")
 
 	if err!=nil{
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+
 		return
 	}
 	w.WriteHeader(http.StatusCreated)

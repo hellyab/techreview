@@ -14,4 +14,5 @@ type ArticleRepository interface {
 	RateArticle(articleRatings *entities.ArticleRatings)
 	ArticleRateCount(articleId string) int
 
+
 }

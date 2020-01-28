@@ -49,7 +49,7 @@ func NewUserHandler(t *template.Template, usrServ user.UserService,
 // Authenticated checks if a user is authenticated to access a given route
 func (uh *UserHandler) Authenticated(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		ok := uh.loggedIn(r)
+		ok := uh.LoggedIn(r)
 		if !ok {
 			fmt.Println("user is not logged in")
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -98,6 +98,7 @@ func (uh *UserHandler) Authorized(next http.Handler) http.Handler {
 func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	userByUsernameDest := "http://localhost:8181/users/username/"
 	sessionDest := "http://localhost:8181/sessions"
+
 	userInQuestion := entities.User{}
 	userSession := entities.Session{}
 	token, err := rtoken.CSRFToken(uh.csrfSignKey)
@@ -378,8 +379,8 @@ func (uh *UserHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		//http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
-
-func (uh *UserHandler) loggedIn(r *http.Request) bool {
+var  AppLevelCookie *http.Cookie
+func (uh *UserHandler) LoggedIn(r *http.Request) bool {
 	if uh.userSess == nil {
 		fmt.Println("this is no user user session")
 		return false
@@ -390,7 +391,7 @@ func (uh *UserHandler) loggedIn(r *http.Request) bool {
 		fmt.Println(r.Context().Value(ctxUserSessionKey))
 	}
 		c, err := r.Cookie(userSess.UUID)
-
+		AppLevelCookie = c
 		// cookie is related with session id
 	fmt.Println("got the cookie ", c)
 	if err != nil {

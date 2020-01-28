@@ -23,6 +23,8 @@ import (
 
 	usrRep "github.com/hellyab/techreview/user/repository"
 	usrSrv "github.com/hellyab/techreview/user/service"
+
+
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
@@ -35,15 +37,18 @@ func createTables(dbconn *gorm.DB) []error {
 	return nil
 }
 
+
+
 func main() {
 	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
+
 
 	dbconn, err := gorm.Open("postgres", "postgres://postgres:Binaman1!@localhost/techreview?sslmode=disable") //TODO handle errors later
 	if err != nil {
 		fmt.Printf("Error %s", err)
 	}
 
-	createTables(dbconn)
+	//createTables(dbconn)
 	//errs := createTables(dbconn)
 	//if len(errs)>0{
 	//	fmt.Println(errs)
@@ -72,6 +77,19 @@ func main() {
 	mux.HandleFunc("/article", articleHandler)
 	mux.Handle("/logout", uh.Authenticated(http.HandlerFunc(uh.Logout)))
 
+
+
+	time.AfterFunc(15*time.Minute, func() {
+
+
+		sessionSrv.DeleteSession(sess.UUID)
+
+		fmt.Println("called after a minute")
+
+	})
+
+
+
 	http.ListenAndServe("localhost:8080", mux)
 
 }
@@ -87,6 +105,7 @@ func allQuestions(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	templates.ExecuteTemplate(w, "question.html", Questions)
+
 
 }
 
@@ -193,7 +212,7 @@ func articleHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func configSess() *entities.Session {
-	tokenExpires := time.Now().Add(time.Minute * 1).Unix()
+	tokenExpires := time.Now().Add(time.Minute * 15).Unix()
 	sessionID := rtoken.GenerateRandomID(32)
 	signingString, err := rtoken.GenerateRandomString(32)
 	if err != nil {

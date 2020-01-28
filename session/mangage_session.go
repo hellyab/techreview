@@ -24,6 +24,7 @@ func Create(claims jwt.Claims, sessionID string, signingKey []byte, w http.Respo
 		HttpOnly: true,
 	}
 	http.SetCookie(w, &c)
+
 }
 
 // Valid validates client cookie value
