@@ -61,9 +61,9 @@ func (qs *QuestionService) StoreQuestion(question *entities.Question) (*entities
 	return qstn, errs
 }
 
-func (qs *QuestionService) FollowQuestion(questionId, userId string) bool{
+func (qs *QuestionService) FollowQuestion(follow entities.QuestionFollow) bool{
 
-	followExists := qs.questionRepo.FollowQuestion(questionId,userId)
+	followExists := qs.questionRepo.FollowQuestion(follow)
 	if !followExists {
 		fmt.Println("follow doesn't exist form service")
 		return false

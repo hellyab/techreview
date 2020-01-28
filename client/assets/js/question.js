@@ -30,7 +30,6 @@ function submitQuestion() {
 
   fetch("http://localhost:8181/question", {
     method: "POST",
-    mode: "no-cors",
     headers: new Headers(),
     body: JSON.stringify({ Inquiry: inquiry.value, InquirerID: "mvaney95" })
   })

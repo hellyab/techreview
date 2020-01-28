@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/rs/cors"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
-
 
 	"github.com/hellyab/techreview/delivery/http/handler"
 
@@ -76,18 +76,20 @@ func main() {
 	router.POST("/questions", questionHandler.PostQuestion)
 	router.PUT("/questions/:id", questionHandler.PutQuestion)
 	router.DELETE("/questions/:id", questionHandler.DeleteQuestion)
-	router.POST("/questions/follows",questionHandler.FollowQuestion)
-	router.POST("/questions/follows/status", questionHandler.FollowedByUser)
+	router.POST("/questions/follow",questionHandler.FollowQuestion)
+	router.POST("/questions/follow/status", questionHandler.FollowedByUser)
 	router.GET("/follows/:quesId", questionHandler.FollowCount)
 
 	router.GET("/answers", answerHandler.GetAnswers)
-	router.GET("/answers/:id", answerHandler.GetAnswer)
+	router.GET("/answers/id=:id", answerHandler.GetAnswer)
 	router.POST("/answers", answerHandler.PostAnswer)
 	router.PUT("/answers/:id", answerHandler.PutAnswer)
 	router.DELETE("/answers/:id", answerHandler.DeleteAnswer)
-	router.GET("/answersbyquestion/:questionId", answerHandler.GetAnswersByQuestionId)
-	router.POST("/answers/upvote",answerHandler.UpVoteAnswer)
+
+  router.POST("/answers/upvote",answerHandler.UpVoteAnswer)
 	router.GET("/upvotes/:ansId", answerHandler.UpVoteCount)
+	router.GET("/answers/byquestion/:questionId", answerHandler.GetAnswersByQuestionId)
+
 
 	router.GET(	"/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
@@ -100,10 +102,12 @@ func main() {
 	router.POST("/articles", articleHandler.PostArticle)
 	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
+
   router.POST("/articles/ratings", articleHandler.RateArticle)
 	router.POST("/ratings/:artId",articleHandler.ArticleRateCount)
 	router.GET("/search/:searchKey", articleHandler.SearchArticle)
   
+
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/id=:id", userHandler.GetUser)
 	router.GET("/users/username/:username", userHandler.GetUserByUsername)
@@ -130,31 +134,5 @@ func main() {
 
 	http.ListenAndServe("localhost:8181", apiHandler)
 
-
-	router.GET("/users", userHandler.GetUsers)
-	router.GET("/users/id=:id", userHandler.GetUser)
-	router.GET("/users/username/:username", userHandler.GetUserByUsername)
-	router.POST("/users", userHandler.AddUser)
-	router.DELETE("/users/:id", userHandler.DeleteUser)
-	router.PUT("/users/:id", userHandler.UpdateUser)
-
-	router.GET("/roles", roleHandler.GetRoles)
-	router.GET("/roles/id=:id", roleHandler.GetRole)
-	router.GET("/role/name/:name", roleHandler.GetRoleByName)
-	router.POST("/roles", roleHandler.AddRole)
-	router.DELETE("/roles/:id", roleHandler.DeleteRole)
-	router.PUT("/roles/:id", roleHandler.UpdateRole)
-
-	router.GET("/sessions/:id", sessHandler.GetSession)
-	router.POST("/sessions", sessHandler.AddSession)
-	router.DELETE("/sessions/:id", sessHandler.DeleteSession)
-
-
-	//apiHandler := cors.New(cors.Options{
-	//	AllowedOrigins: []string{"*"},
-	//	AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
-	//}).Handler(router)
-
-	http.ListenAndServe("localhost:8181", router)
 
 }

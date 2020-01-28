@@ -11,7 +11,7 @@ type QuestionRepository interface {
 	UpdateQuestion(question *entities.Question) (*entities.Question, []error)
 	DeleteQuestion(id string) (*entities.Question, []error)
 	StoreQuestion(question *entities.Question) (*entities.Question, []error)
-	FollowQuestion(questionId, userId string) (bool)
+	FollowQuestion(follow entities.QuestionFollow) (bool)
 	FollowedByUser(questionFollow *entities.QuestionFollow)bool
 	FollowCount(questionId string)int
 }

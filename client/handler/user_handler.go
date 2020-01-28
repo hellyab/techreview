@@ -56,7 +56,7 @@ func (uh *UserHandler) Authenticated(next http.Handler) http.Handler {
 			return
 		}
 		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
-		fmt.Println("context stored",ctx, uh.userSess)
+		//fmt.Println("context stored",ctx, uh.userSess)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)
@@ -102,12 +102,12 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	userInQuestion := entities.User{}
 	userSession := entities.Session{}
 	token, err := rtoken.CSRFToken(uh.csrfSignKey)
-	fmt.Println("Login called successfully")
+	//fmt.Println("Login called successfully")
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 	if r.Method == http.MethodGet {
-		fmt.Println("Login get called successfully")
+		//fmt.Println("Login get called successfully")
 
 		loginForm := struct {
 			Values  url.Values
@@ -123,7 +123,7 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		fmt.Println("Login post called successfully")
+		//fmt.Println("Login post called successfully")
 
 		// Parse the form data
 		err := r.ParseForm()
@@ -131,13 +131,14 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-		fmt.Println("Form Parsed successfully")
+		//fmt.Println("Form Parsed successfully")
 
 		loginForm := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
 		//usr, errs := uh.userService.UserByUsername(r.FormValue("loginUsername"))
 		username := r.FormValue("loginUsername")
 		//fmt.Println(username)
 		userResp, err := http.Get(userByUsernameDest + username)
+
 		//fmt.Println(userResp)
 		if err!=nil {
 			fmt.Println("Error here: not found")
@@ -170,9 +171,10 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			uh.tmpl.ExecuteTemplate(w, "user-entry.html", loginForm)
 			return
 		}
-		fmt.Println("PASS N USER CHECKED")
+		//fmt.Println("PASS N USER CHECKED")
 		uh.loggedInUser = &userInQuestion
-		claims := rtoken.Claims(userInQuestion.Username, uh.userSess.Expires)
+		fmt.Println("the user ID is ", uh.loggedInUser.ID)
+		claims := rtoken.Claims(userInQuestion.ID, uh.userSess.Expires)
 		session.Create(claims, uh.userSess.UUID, uh.userSess.SigningKey, w)
 		sessionJson, err := json.Marshal(uh.userSess)
 		//fmt.Println("session json", sessionJson)
@@ -202,7 +204,7 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(sessErrJson.Error())
 			loginForm.VErrors.Add("generic", "Username or password")
 			uh.tmpl.ExecuteTemplate(w, "user-entry.html", loginForm)
-			fmt.Println("Session json err")
+			//fmt.Println("Session json err")
 			return
 		}
 
@@ -222,15 +224,15 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	deleteSessionDest := "http://localhost:8181/sessions/"
 	userSess, err2:= r.Context().Value(ctxUserSessionKey).(*entities.Session)
-	fmt.Println("check user session", userSess)
+	//fmt.Println("check user session", userSess)
 	if err2{
 		fmt.Println("error fetching user session")
 	}
 
-	fmt.Println("about to call session.REmove")
+	//fmt.Println("about to call session.REmove")
 	session.Remove(userSess.UUID, w)
 	uuidJson, err := json.Marshal(userSess.UUID)
-	fmt.Println("session json", uuidJson)
+	//fmt.Println("session json", uuidJson)
 	if err!=nil{
 		fmt.Println("Marshal err in uuidJson")
 		return
@@ -244,9 +246,12 @@ func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	client := http.Client{}
 
 	resp, err := client.Do(req)
+	if resp.StatusCode!=200{
+		fmt.Println(resp)
+	}
 
 	//resp, err := http.DEL(deleteSessionDest + userSess.UUID, "application/json", bytes.NewBuffer(uuidJson))
-	fmt.Println("deleted via ui", resp)
+	//fmt.Println("deleted via ui", resp)
 	//uh.sessionService.DeleteSession(userSess.UUID)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
@@ -386,24 +391,25 @@ func (uh *UserHandler) LoggedIn(r *http.Request) bool {
 		return false
 	}
 	userSess := uh.userSess
-	fmt.Println("there is a user session", userSess)
+	//fmt.Println("there is a user session", userSess)
 	if r.Context().Value(ctxUserSessionKey) != nil {
 		fmt.Println(r.Context().Value(ctxUserSessionKey))
 	}
 		c, err := r.Cookie(userSess.UUID)
 		AppLevelCookie = c
 		// cookie is related with session id
-	fmt.Println("got the cookie ", c)
+	//fmt.Println("got the cookie ", c)
 	if err != nil {
 		fmt.Println("didn't get the cookie ", err)
 		return false
 	}
+	fmt.Println("the value of the damn cookie", c.Value)
 	ok, err := session.Valid(c.Value, userSess.SigningKey)
 	if !ok || (err != nil) {
 		fmt.Println("there is error while checking session validity")
 		return false
 	}
-	fmt.Println("user is logged in")
+	//fmt.Println("user is logged in")
 	return true
 }
 func (uh *UserHandler) checkAdmin(rs []entities.Role) bool {

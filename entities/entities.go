@@ -7,7 +7,7 @@ import (
 
 //User represents application user and has a string ID (which is still being reconsidered)
 type User struct {
-	//ID         string `gorm:"type:varchar; default; replace(uuid_generate_v4() :: text, '-', '')`
+	ID         string `gorm:"type:varchar; default; replace(uuid_generate_v4() :: text, '-', '')`
 	Username   string
 	FirstName  string
 	LastName   string
@@ -55,7 +55,7 @@ type Comment struct {
 //Question represents question asked on the platform. It has its own id and contains the inquirer's id
 type Question struct {
 	ID         string
-	InquirerId string
+	InquirerID string
 	Inquiry    string
 	AskedAt time.Time
 	Follows uint
@@ -67,7 +67,7 @@ type Question struct {
 type Answer struct {
 	ID         string
 	QuestionID string
-	ReplierId string
+	ReplierID string
 	Answer     string
 	Votes uint
 }
@@ -113,5 +113,5 @@ type AnswersByQuesId struct{
 	AnsweredByUserName string
 	AnsweredByFirstName string
 	AnsweredByLastName string
-	AnswerId string
+	AnswerID string
 }

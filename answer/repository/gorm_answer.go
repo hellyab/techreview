@@ -88,7 +88,7 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 	}
 
 	for _, ans := range answs{
-		errsForUser := ansRepo.conn.Where("id = ?", ans.ReplierId). First(&user).GetErrors()
+		errsForUser := ansRepo.conn.Where("id = ?", ans.ReplierID). First(&user).GetErrors()
 
 		if len(errsForUser) > 0 {
 			fmt.Println("errors fetching the user")
@@ -100,7 +100,7 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 		ansByQ.AnsweredByLastName = user.LastName
 		ansByQ.Votes = int(ans.Votes)
 		ansByQ.Answer = ans.Answer
-		ansByQ.AnswerId = ans.ID
+		ansByQ.AnswerID = ans.ID
 
 		ansByQuestionArray = append(ansByQuestionArray, ansByQ)
 	}

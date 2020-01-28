@@ -75,15 +75,15 @@ func (qstnRepo *QuestionGormRepo) StoreQuestion(question *entities.Question) (*e
 }
 
 
-func (qstnRepo *QuestionGormRepo) FollowQuestion(questionId, userId string) bool{
-	qstn := entities.QuestionFollow{}
-	qstn.UserID = userId
-	qstn.QuestionID = questionId
-	errs := qstnRepo.conn.Where("question_id = ? AND user_id= ?", questionId, userId).First(&qstn).GetErrors()
+func (qstnRepo *QuestionGormRepo) FollowQuestion(questionFollow entities.QuestionFollow) bool{
+	//qstn := entities.QuestionFollow{}
+	//qstn.UserID = userId
+	//qstn.QuestionID = questionId
+	errs := qstnRepo.conn.Where("question_id = ? AND user_id= ?", questionFollow.QuestionID, questionFollow.UserID).First(&questionFollow).GetErrors()
 
 	if len(errs) > 0 {
 
-		errs := qstnRepo.conn.Create(qstn).GetErrors()
+		errs := qstnRepo.conn.Create(questionFollow).GetErrors()
 		if len(errs) > 0 {
 			fmt.Println("error storing the quesition follow")
 			return false
@@ -93,12 +93,14 @@ func (qstnRepo *QuestionGormRepo) FollowQuestion(questionId, userId string) bool
 		return true
 
 	} else{
-		errs := qstnRepo.conn.Delete(qstn).GetErrors()
+		errs := qstnRepo.conn.Delete(questionFollow).GetErrors()
 		if len(errs) > 0 {
 			fmt.Println("error while deleting question follow", errs)
 		}
-		fmt.Println("deleted question follow succuessfully")
-		return true
+
+		fmt.Println("deleted succuessfully")
+		return false
+
 	}
 }
 
