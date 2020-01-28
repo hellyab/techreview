@@ -1,5 +1,5 @@
 {{define "navbar"}}
-    <nav class="navbar navbar-expand-md navbar-light shadow-sm sticky-top" id="theWholeNavbar">
+    <nav class="navbar navbar-expand-md navbar-light shadow-sm sticky-top bg-white" id="theWholeNavbar">
         <!-- One of the primary actions on mobile is to call a business - This displays a phone button on mobile only -->
         <div class="navbar-toggler-left my-1 question">
             <button class="mx-1 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
@@ -8,7 +8,6 @@
             </button>
             <a class="d-lg-none d-md-none d-sm-inline d-inline lead text-dark text-center">TECH REVIEW</a>
         </div>
-
         <div class="collapse navbar-collapse flex-column " id="navbar">
 
             <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
@@ -24,6 +23,12 @@
                                aria-label="Search">
                         <button class="btn btn-sm btn-outline-success lead my-2" type="submit">Search</button>
                     </form>
+                    {{if .}}
+                        <form class="form-inline d-inline mr-2" action="/logout" method="post">
+                            <button class="btn btn-sm btn-outline-accent lead my-2" type="submit">Logout</button>
+                        </form>
+
+                    {{else}}
                     <li class="nav-item ml-3 mb-auto d-inline">
                         <a class="nav-link entry-nav d-inline" href="#">
 
@@ -38,6 +43,7 @@
                         </a>
 
                     </li>
+                    {{end}}
 
                 </div>
 
@@ -46,9 +52,9 @@
             <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
                 <nav class="nav justify-content-center">
                     <a class="text-dark mx-1 nav-link lead" href="#"> Home</a>
-                    <a class="text-dark mx-1 nav-link lead" href="#">Articles</a>
-                    <a class="text-dark mx-1 nav-link lead" href="#">Reviews</a>
-                    <a class="text-dark mx-1 nav-link lead" href="#">Q & A Forum</a>
+                    <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/articles/post">Articles</a>
+                    <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/articles/post">Reviews</a>
+                    <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/questions">Q & A Forum</a>
                 </nav>
             </ul>
 
@@ -56,6 +62,7 @@
         </div>
 
     </nav>
-    <script src="assets/js/navbar.js"></script>
+    <script src="http://localhost:8080/assets/js/navbar.js"></script>
+{{/*    <link *ngIf="cssUrl" rel="stylesheet" href="http://localhost:8080/assets/universal.css" type="text/css">*/}}
     <!--Navbar ends here-->
 {{end}}

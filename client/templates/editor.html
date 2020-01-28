@@ -7,6 +7,111 @@
     <title>Editor</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-md navbar-light shadow-sm sticky-top bg-white" id="theWholeNavbar">
+    <!-- One of the primary actions on mobile is to call a business - This displays a phone button on mobile only -->
+    <div class="navbar-toggler-left my-1 question">
+        <button class="mx-1 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="d-lg-none d-md-none d-sm-inline d-inline lead text-dark text-center">TECH REVIEW</a>
+    </div>
+    <div class="collapse navbar-collapse flex-column " id="navbar">
+
+        <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
+            <a href="#"
+               class="text-dark success nav-link lead flex-grow-1 d-lg-inline d-md-inline d-sm-none d-none">TECH
+                REVIEW </a>
+
+
+
+            <div class="flex-row">
+                <form class="form-inline d-inline mr-2" action="/logout" method="post">
+                    <input class="form-control btn-sm mr-sm-2 lead" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-sm btn-outline-success lead my-2" type="submit">Search</button>
+                </form>
+                {{if .}}
+                    <form class="form-inline d-inline mr-2" action="/logout" method="post">
+                        <button class="btn btn-sm btn-outline-accent lead my-2" type="submit">Logout</button>
+                    </form>
+
+                {{else}}
+                    <li class="nav-item ml-3 mb-auto d-inline">
+                        <a class="nav-link entry-nav d-inline" href="#">
+
+                            <button class="btn btn-sm btn-outline-success lead d-inline" type="button">Login</button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item mr-2 d-inline-block">
+
+                        <a class="nav-link entry-nav" href="#">
+                            <button class="btn btn-sm btn-outline-accent lead" type="button">Register</button>
+                        </a>
+
+                    </li>
+                {{end}}
+
+            </div>
+
+        </ul>
+
+        <ul class="navbar-nav  w-100 justify-content-center bg-white px-3">
+            <nav class="nav justify-content-center">
+                <a class="text-dark mx-1 nav-link lead" href="#"> Home</a>
+                <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/articles/post">Articles</a>
+                <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/articles/post">Reviews</a>
+                <a class="text-dark mx-1 nav-link lead" href="http://localhost:8080/questions">Q & A Forum</a>
+            </nav>
+        </ul>
+
+
+    </div>
+
+</nav>
+<style>
+    .navbar {
+        padding:0rem;
+        margin-bottom:2rem;
+        position: absolute;
+        top: 0;
+    }
+
+    .dropdown .dropdown-menu {
+        border-radius:0;
+    }
+
+    .nav-link:hover{
+        color: rgb(4, 88, 4)!important;
+    }
+
+
+
+
+    /* Medium devices (tablets, 768px and up)
+    The navbar toggle appears at this breakpoint */
+    @media (min-width: 768px) {
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+            border-radius:0;
+        }
+    }
+</style>
+<script>
+
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            document.getElementById("theWholeNavbar").style.top = "-50px";
+
+        } else {
+            document.getElementById("theWholeNavbar").style.top = "0";
+        }
+    }
+</script>
     <div id="editorjs"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.16.1/dist/editor.min.js"></script>
@@ -18,7 +123,101 @@
     <script src="assets/js/edit.js"></script>
     <button onclick="save()">Save</button>
 
+<script>
+    var resData = 0;
+    var editor = new EditorJS({
+        tools: {
+            header: Header,
+            linkTool: {
+                class: LinkTool
+            },
+            raw: RawTool,
+            list: {
+                class: List,
+                inlineToolbar: true
+            },
+            image: {
+                class: ImageTool,
+                config: {
+                    uploader: {
+                        /**
+                         * Upload file to the server and return an uploaded image handler
+                         * @param {File} file - file selected from the device or pasted by drag-n-drop
+                         * @return {Promise.<{success, file: {url}}>}
+                         */
+                        uploadByFile(file) {
+                            // your own uploading logic here
 
+                            var fd = new FormData();
+
+                            fd.append("file", file);
+
+                            return $.ajax({
+                                url: "upload",
+                                type: "post",
+                                data: fd,
+                                dataType: "json",
+                                contentType: false,
+                                processData: false
+                            })
+                                .done(function(data) {
+                                    console.log(data);
+                                    return new Promise((resolve, reject) => {
+                                        resolve(data);
+                                        reject(data);
+                                    });
+                                })
+                        },
+                        /**
+                         * Send URL-string to the server. Backend should load image by this URL and return an uploaded image handler
+                         * @param {string} url - pasted image URL
+                         * @return {Promise.<{success, file: {url}}>}
+                         */
+                        uploadByUrl(url) {
+                            // your ajax request for uploading
+                            return MyAjax.upload(file).then(() => {
+                                return {
+                                    success: 1,
+                                    file: {
+                                        url:
+                                            "https://codex.so/upload/redactor_images/o_e48549d1855c7fc1807308dd14990126.jpg"
+                                        // any other image handler you want to store, such as width, height, color, extension, etc
+                                    }
+                                };
+                            });
+                        }
+                    }
+                }
+            }
+        },
+
+        // Other configuration properties
+
+        /**
+         * onReady callback
+         */
+        onReady: () => {
+            console.log("Editor.js is ready to work!");
+        }
+    });
+
+    function save(){
+        editor.save().then((outputData) => {
+
+            fetch("http://localhost:8181/articles", {
+                method: "POST",
+                mode: "no-cors",
+                headers: new Headers(),
+                body: JSON.stringify({ Author: "llavignee1", Content: outputData, Topics:["techy techy", "Techa techa"], AverageRating: 0, NumberOfRatings: 0 })
+            })
+                .then(console.log("Success"))
+                .catch(err => console.log(err))
+        }).catch((error) => {
+            console.log('Saving failed: ', error)
+        });
+    }
+
+</script>
     
 </body>
 </html>

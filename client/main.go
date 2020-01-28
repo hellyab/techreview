@@ -26,22 +26,29 @@ import (
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
-
 func createTables(dbconn *gorm.DB) []error {
-
+	errs := dbconn.CreateTable(&entities.Session{}, &entities.Role{}).GetErrors()
 	if errs != nil {
 		return errs
 	}
 	return nil
 }
 
+
 func main() {
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/techreview?sslmode=disable")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer dbconn.Close()
 	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
 
-	//errs := createTables(dbconn)
-	//if len(errs)>0{
-	//	fmt.Println(errs)
-	//}
+	errs := createTables(dbconn)
+	if len(errs)>0{
+		fmt.Println(errs)
+	}
 	sessionRepo := usrRep.NewSessionGormRepo(dbconn)
 	sessionSrv := usrSrv.NewSessionService(sessionRepo)
 
@@ -58,7 +65,13 @@ func main() {
 	sess := configSess()
 	uh := handler.NewUserHandler(templates, userServ, sessionSrv, roleServ, sess, csrfSignKey)
 
-	mux.Handle("/questions", uh.Authenticated(http.HandlerFunc(allQuestions)))
+	mux.Handle("/questions", uh.Authenticated(http.HandlerFunc(uh.FetchQuestions)))
+	mux.Handle("/questions/post", uh.Authenticated(http.HandlerFunc(handler.StoreQuestion)))
+	mux.Handle("/questions/follow", uh.Authenticated(http.HandlerFunc(uh.FollowQuestion)))
+	mux.Handle("/questions/read", uh.Authenticated(http.HandlerFunc(uh.SingleQuestion)))
+	mux.Handle("/answer", uh.Authenticated(http.HandlerFunc(uh.AnswerAQuestion)))
+	mux.Handle("/articles/post", uh.Authenticated(http.HandlerFunc(uh.PostArticle)))
+
 	mux.HandleFunc("/userentry", uh.Signup)
 	mux.HandleFunc("/signup", uh.Signup)
 	mux.HandleFunc("/login", uh.Login)
@@ -70,20 +83,20 @@ func main() {
 
 }
 
-func allQuestions(w http.ResponseWriter, _ *http.Request) {
-	Questions, err := handler.FetchQuestions()
-
-	if err != nil {
-		w.WriteHeader(http.StatusNoContent)
-		fmt.Println("Error Occured")
-		//TODO Add error layout
-		//tmpl.ExecuteTemplate(w, "error.layout", nil)
-	}
-
-	templates.ExecuteTemplate(w, "questions.html", Questions)
-
-
-}
+//func allQuestions(w http.ResponseWriter, _ *http.Request) {
+//	Questions, err := handler.FetchQuestions()
+//
+//	if err != nil {
+//		w.WriteHeader(http.StatusNoContent)
+//		fmt.Println("Error Occured")
+//		//TODO Add error layout
+//		//tmpl.ExecuteTemplate(w, "error.layout", nil)
+//	}
+//
+//	templates.ExecuteTemplate(w, "questions.html", Questions)
+//
+//
+//}
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	dest := "http://localhost:8181/user/"
@@ -188,7 +201,7 @@ func articleHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func configSess() *entities.Session {
-	tokenExpires := time.Now().Add(time.Minute * 1).Unix()
+	tokenExpires := time.Now().Add(time.Minute * 15).Unix()
 	sessionID := rtoken.GenerateRandomID(32)
 	signingString, err := rtoken.GenerateRandomString(32)
 	if err != nil {

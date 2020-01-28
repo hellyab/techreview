@@ -191,6 +191,7 @@ func (qh *QuestionHandler) FollowQuestion(w http.ResponseWriter, r *http.Request
 	questionFollow := &entities.QuestionFollow{}
 
 	err := json.Unmarshal(body, questionFollow)
+	fmt.Println("IMPORTANT", questionFollow)
 
 	if err != nil {
 		fmt.Println("errors while puting the json in to the questionFollow struct")
@@ -200,7 +201,7 @@ func (qh *QuestionHandler) FollowQuestion(w http.ResponseWriter, r *http.Request
 	}
 	fmt.Println("successfully unmarshed the json body")
 
-	questionExists:= qh.questionService.FollowQuestion(questionFollow.QuestionID, questionFollow.UserID)
+	questionExists:= qh.questionService.FollowQuestion(*questionFollow)
 
 	if !questionExists{
 		fmt.Println("quesition dosen't exist", questionExists)
@@ -217,6 +218,7 @@ func (qh *QuestionHandler) FollowQuestion(w http.ResponseWriter, r *http.Request
 	fmt.Println("we got the output as json, the question exist boolean")
 
 	w.Header().Set("Content-Type", "application/json")
+	//w.(http.StatusText(http.StatusCreated), http.StatusCreated)
 	w.Write(output)
 	return
 }
