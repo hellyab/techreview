@@ -3,18 +3,9 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-<<<<<<< HEAD
-	"net/http"
-
-	"github.com/hellyab/techreview/entities"
-	"github.com/hellyab/techreview/user"
-=======
 	"github.com/hellyab/techreview/entities"
 	"github.com/hellyab/techreview/user"
 	"net/http"
-
-
->>>>>>> remotes/origin/master
 	"github.com/julienschmidt/httprouter"
 )
 

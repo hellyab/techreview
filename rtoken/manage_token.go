@@ -6,7 +6,7 @@ import (
 
 // CustomClaims specifies custom claims
 type CustomClaims struct {
-	Email string `json:"email"`
+	UserID string `json:"userID"`
 	jwt.StandardClaims
 }
 
@@ -35,9 +35,9 @@ func Valid(signedToken string, signingKey []byte) (bool, error) {
 }
 
 // Claims returns claims used for generating jwt tokens
-func Claims(email string, tokenExpires int64) jwt.Claims {
+func Claims(userID string, tokenExpires int64) jwt.Claims {
 	return CustomClaims{
-		email,
+		userID,
 		jwt.StandardClaims{
 			ExpiresAt: tokenExpires,
 		},

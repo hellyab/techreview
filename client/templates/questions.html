@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!--QUestions css-->
     <link rel="stylesheet" href="assets/css/questions.css">
     <link rel="stylesheet" href="assets/css/universal.css">
@@ -18,121 +18,88 @@
 </head>
 
 <body>
-    <!--Navbar starts here-->
+<!--Navbar starts here-->
 
-    {{template "navbar"}}
-
-    <!--QUestion page starts here-->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-12 p-2 bg-white">
-                <div class="card ask-card shadow-sm mx-1">
-                    <div class="card-body">
+{{template "navbar" .LoggedIn}}
+<!--QUestion page starts here-->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-12 p-2 bg-white">
+            <div class="card ask-card shadow-sm mx-1">
+                <div class="card-body">
+                    <form action="/questions/post" method="post">
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Got a question?</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" name="inquiryBody" rows="5"></textarea>
                         </div>
                         <button type="submit" class="btn btn-outline-accent w-25 rounded-pill shadow-sm bg-green ">
                             Ask
                         </button>
-                    </div>
-                </div>
-                <div class="card ask-card shadow-sm mx-1 my-2">
-                    <div class="card-body">
-                        <p class="lead"> <i>Whats up?</i></p>
-                        <a href="#">See answer.</a>
-                    </div>
+                    </form>
+
                 </div>
             </div>
-
-
-            <div class="p-2 col-lg-8 col-md-8 col-12">
-                <!--Question item starts here-->
-                <div class="card bg-white mr-auto shadow-m question-card border-none shadow-sm" id="card">
-                    <div class="card-body flex-column">
-
-                        <p class="card-text lead"><span class="text-accent">&ldquo;</span>A delivery truck takes 4.5
-                            rosehorums to get from its warehouse in Garden City to the customer in Floralville at a
-                            speed of
-                            50 PPP (poppyomiscusÂ per petuniaminium) and uses 10 cedariters of special Milorganine fuel
-                            during the trip.
-
-                            How many pansyometers are travelled between warehouse and customer and what is the driverÂs
-                            fuel
-                            mileage in poppyomiscusÂ per marigoldetum?
-                            <span class="text-accent">&rdquo;</span>
-                        </p>
-                        <span class="card-title font-weight-bold text-accent">John Doe</span>
-                        <a href="#" class="font-weight-light text-accent">@johndoe</a>
-                        <p class="text-accent"><i>Jan 25, 2019 3:30PM</i></p>
-                        <hr />
-                        <div class=" col-12 text-center">
-                            <div class="btn-group-xs">
-                                <button type="submit" data-toggle="tooltip" data-placement="top" title="Follow Question"
-                                    class="btn btn-Woutline-success btn-xs mx-3 pt-2 col-2 rounded-pill shadow-sm bg-green ">
-                                    <i class="material-icons">
-                                        rss_feed
-                                    </i>
-                                </button>
-                                <button type="submit"
-                                ype="submit" data-toggle="tooltip" data-placement="top" title="See answers or answer it yourself"
-                                    class="btn btn-outline-success btn-xs mx-3 pt-2 col-2 rounded-pill shadow-sm bg-green">
-                                    <i class="material-icons">
-                                        question_answer
-                                    </i>
-                                </button>
-
-                            </div>
-                        </div>
-
-
-                    </div>
+            <div class="card ask-card shadow-sm mx-1 my-2">
+                <div class="card-body">
+                    <p class="lead"> <i>Whats up?</i></p>
+                    <a href="#">See answer.</a>
                 </div>
-                <!--QUestion item ends here-->
             </div>
         </div>
+
+
+        <div class="p-2 col-lg-8 col-md-8 col-12">
+            <!--Question item starts here-->
+            {{range .Questions}}
+                <div class="card bg-white mr-auto shadow-m question-card border-none shadow-sm mb-2" id="card">
+                    <input value="{{.ID}}" class="question-id" type="hidden">
+                    <div class="card-body flex-column">
+
+                        <p class="card-text lead"><span class="text-accent">&ldquo;</span>
+                            {{.Inquiry}}
+                            <span class="text-accent">&rdquo;</span>
+                        </p>
+{{/*                        <span class="card-title font-weight-bold text-accent">John Doe</span>*/}}
+                        <a href="#" id="name-of-{{.InquirerID}}" class="font-weight-light text-accent"></a>
+                        <p class="text-accent"><i>{{.AskedAt}}</i></p>
+                        <hr />
+                        <div class=" col-12 text-center btn-group">
+{{/*                            <div class="">*/}}
+                                <form action="questions/follow" method="POST" class="form-inline col-2 btn-xs ml-auto mr-3 pt-2">
+                                    <input value="{{.ID}}" type="hidden" name="question-id">
+                                    <button type="submit" data-toggle="tooltip" data-placement="top" title="Follow Question" id="follow-{{.ID}}"
+                                            class="btn btn-outline-success btn-xs col-12  d-inline rounded-pill shadow-sm bg-green ">
+                                        <i class="material-icons">
+                                            rss_feed
+                                        </i>
+                                    </button>
+                                </form>
+                                <form action="questions/read" method="GET" class="form-inline col-2 btn-xs mr-auto ml-3 pt-2">
+                                    <input value="{{.ID}}" type="hidden" name="questionID">
+                                    <button type="submit"  id="answers-{{.ID}}"
+                                            ype="submit" data-toggle="tooltip" data-placement="top" title="See answers or answer it yourself"
+                                            class="btn btn-outline-success  d-inline btn-xs col-12 rounded-pill shadow-sm bg-green">
+                                        <i class="material-icons">
+                                            question_answer
+                                        </i>
+                                    </button>
+                                </form>
+
+{{/*                            </div>*/}}
+                        </div>
+                    </div>
+                </div>
+            {{ end}}
+            <!--QUestion item ends here-->
+        </div>
+
+
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+</div>
+<input type="hidden" id="savior" value="{{.UserID}}">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="http://localhost:8080/assets/js/questions.js"></script>
 </body>
-
 </html>
