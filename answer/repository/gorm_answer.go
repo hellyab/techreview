@@ -111,9 +111,7 @@ func (ansRepo *AnswerGormRepo) AnswersByQuestionId(questionId string) ([]entitie
 }
 
 func (ansRepo *AnswerGormRepo) UpVoteAnswer(answerUpvote *entities.AnswerUpvote) {
-	//ansUpvote := entities.AnswerUpvote{}
-	fmt.Println("answer id ", answerUpvote.AnswerID)
-	fmt.Println("user id", answerUpvote.UserID)
+
 	errs := ansRepo.conn.Where("answer_id = ? AND user_id= ?", answerUpvote.AnswerID, answerUpvote.UserID).First(&answerUpvote).GetErrors()
 	//fmt.Println("the found answerUpvote form", ansUpvote)
 	if len(errs) > 0 {

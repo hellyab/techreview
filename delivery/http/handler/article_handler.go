@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/hellyab/techreview/article"
 	"github.com/hellyab/techreview/entities"
 	"net/http"
@@ -87,7 +88,8 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 	err := json.Unmarshal(body, art) // put the unmarled handler of body to aricle struct
 
 	if err != nil {
-		// check if error happens , then return status not found 404
+		fmt.Println(err.Error())
+		fmt.Println("error while unmarshing article")
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -99,6 +101,7 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 
 	// check of errs
 	if len(errs) > 0 {
+		fmt.Println("erro while storing article")
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -106,13 +109,13 @@ func (ah *ArticleHandler) PostArticle(w http.ResponseWriter, r *http.Request, _ 
 
 	// if not errs
 // set up url                    // change url location to /tech/aricles/id
-	art, errs = ah.articleService.GetArticle(art.ID)
-
-	if len(errs) > 0 {
-		w.Header().Set("Content-Type", "application/json")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
+//	art, errs = ah.articleService.GetArticle(art.ID)
+//
+//	if len(errs) > 0 {
+//		w.Header().Set("Content-Type", "application/json")
+//		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+//		return
+//	}
 
 	output, err := json.MarshalIndent(art, "", "\t")
 
@@ -201,3 +204,45 @@ func (ah *ArticleHandler) UpdateArticle(w http.ResponseWriter, r *http.Request, 
 	_, _ = w.Write(updatedArticle) //write the updated article
 	return
 }
+
+func (ah *ArticleHandler) RateArticle(w http.ResponseWriter, r *http.Request, _ httprouter.Params){
+
+	l := r.ContentLength
+	body := make([]byte, l)
+	r.Body.Read(body)
+	artRating := &entities.ArticleRatings{}
+
+	err := json.Unmarshal(body, artRating)
+	fmt.Println("successfully read the body and assinged to the artRating struct")
+	if err != nil {
+		fmt.Println("error while unmarshing the artRating", err)
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		//return
+	}
+
+	ah.articleService.RateArticle(artRating)
+	fmt.Println("success form article rating handler")
+	return
+}
+
+
+func (ah *ArticleHandler) ArticleRateCount(w http.ResponseWriter, _ *http.Request, params httprouter.Params){
+	ansId := params.ByName("artId")
+
+	rateCount := ah.articleService.ArticleRateCount(ansId)
+
+	output, err := json.MarshalIndent(rateCount, "", "\t")
+
+	if err != nil {
+		fmt.Println("error while marshaling")
+		w.Header().Set("Content-Type", "application/json")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+}
+

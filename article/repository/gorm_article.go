@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/hellyab/techreview/article"
 	"github.com/hellyab/techreview/entities"
 	"github.com/jinzhu/gorm"
@@ -45,6 +46,7 @@ func (aRepo *ArticleGormRepo) PostArticle(article *entities.Article) (*entities.
 	art := article
 	errs := aRepo.conn.Create(art).GetErrors()
 	if len(errs) > 0 {
+		fmt.Println("error creating article")
 		return nil, errs
 	}
 	return art, errs
@@ -91,4 +93,46 @@ func (aRepo *ArticleGormRepo) UpdateArticle(article *entities.Article) (*entitie
 		return nil, errs
 	}
 	return art, errs
+}
+
+
+func (aRepo *ArticleGormRepo) RateArticle(articleRatings *entities.ArticleRatings) {
+
+	errs := aRepo.conn.Where("article_id = ? AND user_id= ?", articleRatings.ArticleID, articleRatings.UserID).First(&articleRatings).GetErrors()
+
+	if len(errs) > 0 {
+
+		errs := aRepo.conn.Create(articleRatings).GetErrors()
+		if len(errs) > 0 {
+			fmt.Println("error storing article ratings")
+			return
+		}
+		fmt.Println("stored  article ratings")
+		fmt.Println("query worked")
+		return
+
+	} else{
+		errs := aRepo.conn.Delete(articleRatings).GetErrors()
+		if len(errs) > 0 {
+			fmt.Println("error while deleting article ratings", errs)
+			return
+		}
+		fmt.Println("deleted answer article ratings successfuly")
+		return
+	}
+}
+
+func (aRepo *ArticleGormRepo) ArticleRateCount(articleId string) int{
+	var count int
+	var aritlceRating entities.ArticleRatings
+	//questionFollows := entities.QuestionFollow{}
+	aRepo.conn.Model(&aritlceRating).Where("article_id = ?", articleId).Count(&count)
+	// update the count value in articles table
+	aRepo.conn.Model(&entities.Article{}).Where("id = ?", articleId).UpdateColumn("number_of_ratings", count)
+	// update the average ratings in articles table
+	aRepo.conn.Model(&entities.Article{}).Where("id = ?", articleId).UpdateColumn("average_rating", count/5) // it is doing it just the data
+
+	fmt.Println("counted succesfully, with value: ", count)
+
+	return count
 }

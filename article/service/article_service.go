@@ -69,3 +69,11 @@ func (as *ArticleService) UpdateArticle(article *entities.Article) (*entities.Ar
 
 	return art, errs
 }
+
+func (as *ArticleService) RateArticle(articleRatings *entities.ArticleRatings) {
+	as.articleRepo.RateArticle(articleRatings)
+}
+
+func (as *ArticleService) ArticleRateCount(articleId string) int{
+	return as.articleRepo.ArticleRateCount(articleId)
+}

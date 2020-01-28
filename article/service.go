@@ -13,4 +13,6 @@ type ArticleService interface {
 	PostArticle(article *entities.Article) (*entities.Article, []error)
 	UpdateArticle(article *entities.Article) (*entities.Article, []error)
 	DeleteArticle(id string) (*entities.Article, []error)
+	RateArticle(articleRatings *entities.ArticleRatings)
+	ArticleRateCount(articleId string) int
 }

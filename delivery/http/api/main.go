@@ -87,7 +87,7 @@ func main() {
 	router.POST("/answers/upvote",answerHandler.UpVoteAnswer)
 	router.GET("/upvotes/:ansId", answerHandler.UpVoteCount)
 
-	router.GET("/comments", commentHandler.GetComments)
+	router.GET(	"/comments", commentHandler.GetComments)
 	router.GET("/comments/:id", commentHandler.GetComment)
 	router.POST("/comments", commentHandler.UpdateComment)
 	router.DELETE("/comments/:id", commentHandler.DeleteComment)
@@ -98,6 +98,8 @@ func main() {
 	router.POST("/articles", articleHandler.PostArticle)
 	router.DELETE("/articles/:id", articleHandler.DeleteArticle)
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
+	router.POST("/articles/ratings", articleHandler.RateArticle)
+	router.POST("/ratings/:artId",articleHandler.ArticleRateCount)
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/id=:id", userHandler.GetUser)

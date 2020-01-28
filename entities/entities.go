@@ -72,10 +72,10 @@ type Answer struct {
 	Votes uint
 }
 
-type ArticleRating struct {
+type ArticleRatings struct {
 	ArticleID string
 	UserID string
-
+	RatingValue int
 }
 
 type CommentLike struct{
