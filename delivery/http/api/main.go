@@ -100,6 +100,7 @@ func main() {
 	router.PUT("/articles/:id", articleHandler.UpdateArticle)
 	router.POST("/articles/ratings", articleHandler.RateArticle)
 	router.POST("/ratings/:artId",articleHandler.ArticleRateCount)
+	router.GET("/search/:searchKey", articleHandler.SearchArticle)
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/id=:id", userHandler.GetUser)

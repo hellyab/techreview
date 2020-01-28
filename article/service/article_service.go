@@ -77,3 +77,7 @@ func (as *ArticleService) RateArticle(articleRatings *entities.ArticleRatings) {
 func (as *ArticleService) ArticleRateCount(articleId string) int{
 	return as.articleRepo.ArticleRateCount(articleId)
 }
+
+func (as *ArticleService) SearchArticle(searchKey string) []entities.Article{
+	return as.articleRepo.SearchArticle(searchKey)
+}

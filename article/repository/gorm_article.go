@@ -136,3 +136,18 @@ func (aRepo *ArticleGormRepo) ArticleRateCount(articleId string) int{
 
 	return count
 }
+
+func (aRepo *ArticleGormRepo) SearchArticle(searchKey string) []entities.Article{
+
+	results := []entities.Article{}
+
+	err := aRepo.conn.Table("articles").Where(" @@ to_tsquery(?)", searchKey).Find(&results).GetErrors()
+
+	if err != nil{
+		fmt.Println("error searching articles")
+
+	}
+
+	return results
+
+}

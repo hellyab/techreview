@@ -13,6 +13,6 @@ type ArticleRepository interface {
 	DeleteArticle(id string) (*entities.Article, []error)
 	RateArticle(articleRatings *entities.ArticleRatings)
 	ArticleRateCount(articleId string) int
-
+	SearchArticle(searchKey string)[]entities.Article
 
 }
